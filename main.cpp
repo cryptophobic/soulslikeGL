@@ -5,7 +5,7 @@
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
 GLFWwindow* screen_init();
-unsigned int shaders();
+unsigned int shaders(const char* vertexSource, const char* fragmentSource);
 
 const char *vertexShaderSource = "#version 330 core\n"
                                  "layout (location = 0) in vec3 aPos;\n"
@@ -19,6 +19,13 @@ const char *fragmentShaderSource = "#version 330 core\n"
                                    "void main()\n"
                                    "{\n"
                                    "FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+                                   "}\0";
+
+const char *fragmentShaderSourceYellow = "#version 330 core\n"
+                                   "out vec4 FragColor;\n"
+                                   "void main()\n"
+                                   "{\n"
+                                   "FragColor = vec4(1.0f, 1.0f, 0.0f, 1.0f);\n"
                                    "}\0";
 
 float vertices[] = {
@@ -51,7 +58,8 @@ int main()
     unsigned int VBO1, VBO2, VAO1, VAO2, EBO;
 
     GLFWwindow* window = screen_init();
-    unsigned int shaderProgram = shaders();
+    unsigned int shaderProgram = shaders(vertexShaderSource, fragmentShaderSource);
+    unsigned int shaderProgramYellow = shaders(vertexShaderSource, fragmentShaderSourceYellow);
 
     glGenVertexArrays(1, &VAO1);
     glGenBuffers(1, &VBO1);
@@ -111,6 +119,7 @@ int main()
         glUseProgram(shaderProgram);
         glBindVertexArray(VAO1); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
         glDrawArrays(GL_TRIANGLES, 0, 3);
+        glUseProgram(shaderProgramYellow);
         glBindVertexArray(VAO2); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
@@ -128,13 +137,13 @@ int main()
     return 0;
 }
 
-unsigned int shaders()
+unsigned int shaders(const char* vertexSource, const char* fragmentSource)
 {
     unsigned int vertexShader;
     unsigned int fragmentShader;
 
     vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &vertexShaderSource, nullptr);
+    glShaderSource(vertexShader, 1, &vertexSource, nullptr);
     glCompileShader(vertexShader);
 
     int success;
@@ -147,7 +156,7 @@ unsigned int shaders()
     }
 
     fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &fragmentShaderSource, nullptr);
+    glShaderSource(fragmentShader, 1, &fragmentSource, nullptr);
     glCompileShader(fragmentShader);
     glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
 
