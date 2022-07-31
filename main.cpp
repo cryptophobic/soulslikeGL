@@ -1,6 +1,7 @@
 #include <iostream>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <cmath>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
@@ -26,9 +27,10 @@ const char *fragmentShaderSource = "#version 330 core\n"
 
 const char *fragmentShaderSourceYellow = "#version 330 core\n"
                                    "out vec4 FragColor;\n"
+                                   "uniform vec4 ourColor; // we set this variable in the OpenGL code.\n"
                                    "void main()\n"
                                    "{\n"
-                                   "FragColor = vec4(1.0f, 1.0f, 0.0f, 1.0f);\n"
+                                   "FragColor = ourColor;\n"
                                    "}\0";
 
 float vertices[] = {
@@ -122,7 +124,13 @@ int main()
         glUseProgram(shaderProgram);
         glBindVertexArray(VAO1); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
         glDrawArrays(GL_TRIANGLES, 0, 3);
+        double timeValue = glfwGetTime();
+        double greenValue = (sin(timeValue*1) / 2.0f) + 0.5f;
+        double redValue = (sin(timeValue*2) / 2.0f) + 0.5f;
+        double blueValue = (sin(timeValue*3) / 2.0f) + 0.5f;
+        int vertexColorLocation = glGetUniformLocation(shaderProgramYellow, "ourColor");
         glUseProgram(shaderProgramYellow);
+        glUniform4f(vertexColorLocation, (float)redValue, (float)greenValue, (float)blueValue, 1.0f);
         glBindVertexArray(VAO2); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
