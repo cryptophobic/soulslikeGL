@@ -1,0 +1,36 @@
+//
+// Created by dima on 31.07.22.
+//
+
+#ifndef SOULSLIKEGL_SHADER_H
+#define SOULSLIKEGL_SHADER_H
+
+#include <glad/glad.h> // include glad to get the required OpenGL headers
+#include <string>
+#include <fstream>
+#include <sstream>
+#include <iostream>
+
+namespace common {
+
+    class Shader {
+    public:
+        // the program ID
+        unsigned int ID;
+        // constructor reads and builds the shader
+        Shader(const char *vertexPath, const char *fragmentPath);
+        // use/activate the shader
+        void use();
+        // utility uniform functions
+        void setBool(const std::string &name, bool value) const;
+        void setInt(const std::string &name, int value) const;
+        void setFloat(const std::string &name, float value) const;
+    private:
+        static void checkCompileErrors(unsigned int shader, const std::string& type);
+    };
+
+
+
+} // common
+
+#endif //SOULSLIKEGL_SHADER_H
