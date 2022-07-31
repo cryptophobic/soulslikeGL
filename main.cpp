@@ -95,24 +95,28 @@ int main()
     // uncomment this call to draw in wireframe polygons.
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     int vertexColorLocation = glGetUniformLocation(shaderProgramYellow.ID, "ourColor");
+    int horizontalOffsetLocation = glGetUniformLocation(shaderProgramYellow.ID, "horizontalOffset");
 
     while(!glfwWindowShouldClose(window)) {
         // input
         processInput(window);
+        double timeValue = glfwGetTime();
+        double greenValue = (sin(timeValue*1) / 2.0f) + 0.5f;
+        double redValue = (sin(timeValue*2) / 2.0f) + 0.5f;
+        double blueValue = (sin(timeValue*3) / 2.0f) + 0.5f;
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
         // draw our first triangle
         shaderProgram.use();
+        glUniform1f(horizontalOffsetLocation, (float)-greenValue);
         glBindVertexArray(VAO1); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
         glDrawArrays(GL_TRIANGLES, 0, 3);
-        double timeValue = glfwGetTime();
-        double greenValue = (sin(timeValue*1) / 2.0f) + 0.5f;
-        double redValue = (sin(timeValue*2) / 2.0f) + 0.5f;
-        double blueValue = (sin(timeValue*3) / 2.0f) + 0.5f;
+
         shaderProgramYellow.use();
         glUniform4f(vertexColorLocation, (float)redValue, (float)greenValue, (float)blueValue, 1.0f);
+        glUniform1f(horizontalOffsetLocation, (float)blueValue);
         glBindVertexArray(VAO2); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
