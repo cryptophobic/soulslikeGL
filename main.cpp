@@ -46,6 +46,9 @@ float texCoords[] = {
         0.5f, 1.0f // top-center corner
 };
 
+float opacity = 0.0;
+float iterator = 0.01;
+
 int main()
 {
     unsigned int VBO, VAO, EBO;
@@ -89,7 +92,9 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT);
 
         // draw our first triangle
+        int vertexColorLocation = glGetUniformLocation(shaderProgram.ID, "opacity");
         shaderProgram.use();
+        glUniform1f(vertexColorLocation, opacity);
         shaderProgram.setInt("texture1", 0); // or with shader class
         shaderProgram.setInt("texture2", 1); // or with shader class
         glActiveTexture(GL_TEXTURE0); // activate texture unit first
@@ -149,5 +154,22 @@ void processInput(GLFWwindow *window)
 {
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, true);
+    }
+
+    if(glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
+        opacity += iterator;
+    }
+
+    if(glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
+        opacity -= iterator;
+    }
+
+    if (opacity >= 1.0f) {
+        opacity = 0.99f;
+        iterator = -iterator;
+    }
+    if (opacity <= 0.0f) {
+        opacity = 0.01f;
+        iterator = -iterator;
     }
 }
