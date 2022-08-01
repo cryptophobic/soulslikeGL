@@ -4,7 +4,6 @@
 #include <cmath>
 
 #include "common/Shader.h"
-#include "images/stb_image.h"
 #include "common/Texture.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -53,7 +52,8 @@ int main()
 
     GLFWwindow* window = screen_init();
     common::Shader shaderProgram("../shaders/shader.vert", "../shaders/shader.frag");
-    common::Texture textureObject("../textures/container.jpg");
+    common::Texture textureContainer("../textures/container.jpg");
+    common::Texture textureFace("../textures/awesomeface.png", GL_RGBA);
 
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
@@ -90,7 +90,12 @@ int main()
 
         // draw our first triangle
         shaderProgram.use();
-        glBindTexture(GL_TEXTURE_2D, textureObject.ID);
+        shaderProgram.setInt("texture1", 0); // or with shader class
+        shaderProgram.setInt("texture2", 1); // or with shader class
+        glActiveTexture(GL_TEXTURE0); // activate texture unit first
+        glBindTexture(GL_TEXTURE_2D, textureContainer.ID);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, textureFace.ID);
         glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 

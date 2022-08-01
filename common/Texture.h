@@ -9,7 +9,7 @@ namespace common {
 
     class Texture {
     public:
-        Texture(const char *resourcePth);
+        Texture(const char *resourcePth, GLenum format = GL_RGB);
         // the texture ID
         unsigned int ID;
         int width;
