@@ -1,67 +1,46 @@
 #include <iostream>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <cmath>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include "common/Shader.h"
 #include "common/Texture.h"
+#include "images/stb_image.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
 GLFWwindow* screen_init();
 
-float vertices[] = {
-// positions
-// colors
-        0.49f, 0.51f, 0.0f, 1.0f, 0.0f, 0.0f,
-        -0.51f, 0.51f, 0.0f, 0.0f, 1.0f, 0.0f,
-        -0.51f, -0.49f, 0.0f, 0.0f, 0.0f, 1.0f
-};
-
-float vertices2[] = {
-        // second triangle
-        0.51f, 0.49f, 0.0f,
-        -0.49f, -0.51f, 0.0f,
-        0.51f, -0.51f, 0.0f
-};
-
 // set up vertex data (and buffer(s)) and configure vertex attributes
 // ------------------------------------------------------------------
 float square_vertices[] = {
-        // positions          // colors           // texture coords
-        0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // top right
-        0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // bottom right
-        -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // bottom left
-        -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // top left
+        // positions          // texture coords
+        0.5f,  0.5f, 0.0f,   1.0f, 1.0f, // top right
+        0.5f, -0.5f, 0.0f,   1.0f, 0.0f, // bottom right
+        -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, // bottom left
+        -0.5f,  0.5f, 0.0f,   0.0f, 1.0f  // top left
 };
 
 unsigned int square_indices[] = { // note that we start from 0!
         0, 1, 3, // first triangle
-        1, 2, 3 // second triangle
+        1, 2, 3  // second triangle
 };
 
-float texCoords[] = {
-        0.0f, 0.0f, // lower-left corner
-        1.0f, 0.0f, // lower-right corner
-        0.5f, 1.0f // top-center corner
-};
-
-float opacity = 0.0;
-float iterator = 0.01;
+float degrees = 0.0f;
 
 int main()
 {
-    unsigned int VBO, VAO, EBO;
-
     GLFWwindow* window = screen_init();
     common::Shader shaderProgram("../shaders/shader.vert", "../shaders/shader.frag");
     common::Texture textureContainer("../textures/container.jpg");
     common::Texture textureFace("../textures/awesomeface.png", GL_RGBA);
 
+    unsigned int VBO, VAO, EBO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);
-    // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
 
     glBindVertexArray(VAO);
 
@@ -72,18 +51,15 @@ int main()
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(square_indices), square_indices, GL_STATIC_DRAW);
 
     // position attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)nullptr);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)nullptr);
     glEnableVertexAttribArray(0);
-    // color attribute
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3* sizeof(float)));
+    // texture coord attribute
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-    glEnableVertexAttribArray(2);
-
-    // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
+    shaderProgram.use();
+    shaderProgram.setInt("texture1", 0); // or with shader class
+    shaderProgram.setInt("texture2", 1); // or with shader class
 
     while(!glfwWindowShouldClose(window)) {
         // input
@@ -91,16 +67,20 @@ int main()
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        // draw our first triangle
-        int vertexColorLocation = glGetUniformLocation(shaderProgram.ID, "opacity");
-        shaderProgram.use();
-        glUniform1f(vertexColorLocation, opacity);
-        shaderProgram.setInt("texture1", 0); // or with shader class
-        shaderProgram.setInt("texture2", 1); // or with shader class
         glActiveTexture(GL_TEXTURE0); // activate texture unit first
         glBindTexture(GL_TEXTURE_2D, textureContainer.ID);
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, textureFace.ID);
+
+        glm::mat4 trans = glm::mat4(1.0f);
+        trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
+        trans = glm::rotate(trans, glm::radians(degrees), glm::vec3(0.0, 0.0, 1.0));
+        trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5));
+
+        shaderProgram.use();
+        GLint transformLoc = glGetUniformLocation(shaderProgram.ID,"transform");
+        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+
         glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 
@@ -147,7 +127,10 @@ GLFWwindow* screen_init()
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
-    glViewport(0, 0, width, height);
+    int length = width > height ? height : width;
+    int x = width > height ? (width - length) / 2 : 0;
+    int y = height > width ? (height - length) / 2 : 0;
+    glViewport(x, y, length, length);
 }
 
 void processInput(GLFWwindow *window)
@@ -157,19 +140,10 @@ void processInput(GLFWwindow *window)
     }
 
     if(glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
-        opacity += iterator;
+        degrees = degrees + 10.0f >= 360.0f ? 0.0f : degrees + 10.0f;
     }
 
     if(glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
-        opacity -= iterator;
-    }
-
-    if (opacity >= 1.0f) {
-        opacity = 0.99f;
-        iterator = -iterator;
-    }
-    if (opacity <= 0.0f) {
-        opacity = 0.01f;
-        iterator = -iterator;
+        degrees = degrees - 10.0f <= 0.0f ? 360.0f : degrees - 10.0f;
     }
 }
