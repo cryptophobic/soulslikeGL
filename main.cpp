@@ -44,12 +44,13 @@ int main()
     shaderProgram.use();
     shaderProgram.setInt("texture1", 0); // or with shader class
     shaderProgram.setInt("texture2", 1); // or with shader class
+    glEnable(GL_DEPTH_TEST);
 
     while(!glfwWindowShouldClose(window)) {
         // input
         processInput(window);
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glActiveTexture(GL_TEXTURE0); // activate texture unit first
         glBindTexture(GL_TEXTURE_2D, textureContainer.ID);
