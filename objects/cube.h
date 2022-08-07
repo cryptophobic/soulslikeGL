@@ -5,9 +5,9 @@
 #ifndef SOULSLIKEGL_CUBE_H
 #define SOULSLIKEGL_CUBE_H
 
-namespace common {
+namespace objects {
 
-    float cube_vertices[] = {
+    const float cube_vertices[] = {
             -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
             0.5f, -0.5f, -0.5f, 1.0f, 0.0f,
             0.5f, 0.5f, -0.5f, 1.0f, 1.0f,

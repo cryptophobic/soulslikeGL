@@ -8,25 +8,12 @@
 #include "common/Shader.h"
 #include "common/Texture.h"
 #include "images/stb_image.h"
+#include "objects/square.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
 GLFWwindow* screen_init();
 
-// set up vertex data (and buffer(s)) and configure vertex attributes
-// ------------------------------------------------------------------
-float square_vertices[] = {
-        // positions          // texture coords
-        0.5f,  0.5f, 0.0f,   1.0f, 1.0f, // top right
-        0.5f, -0.5f, 0.0f,   1.0f, 0.0f, // bottom right
-        -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, // bottom left
-        -0.5f,  0.5f, 0.0f,   0.0f, 1.0f  // top left
-};
-
-unsigned int square_indices[] = { // note that we start from 0!
-        0, 1, 3, // first triangle
-        1, 2, 3  // second triangle
-};
 
 float degrees = 0.0f;
 float xtrans = 0.5f;
@@ -47,10 +34,10 @@ int main()
     glBindVertexArray(VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(square_vertices), square_vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(objects::square_vertices), objects::square_vertices, GL_STATIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(square_indices), square_indices, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(objects::square_indices), objects::square_indices, GL_STATIC_DRAW);
 
     // position attribute
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)nullptr);
