@@ -70,16 +70,12 @@ int main()
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, textureFace.ID);
 
-//        glm::mat4 model = glm::mat4(1.0f);
-//        model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f),glm::vec3(0.5f, 1.0f, 0.0f));
         glm::mat4 view = glm::mat4(1.0f);
         // note that we’re translating the scene in the reverse direction
         view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
         glm::mat4 projection;
         projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f,100.0f);
 
-//        GLint modelLoc = glGetUniformLocation(shaderProgram.ID, "model");
-//        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
         shaderProgram.setMat4("view", view);
         shaderProgram.setMat4("projection", projection);
         shaderProgram.use();
@@ -91,9 +87,6 @@ int main()
             model = glm::translate(model, cubePositions[i]);
             float angle = 20.0f * i;
             model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f + angle),glm::vec3(0.5f, 1.0f, 0.0f));
-
-//            model = glm::rotate(model, glm::radians(angle),
-//                                glm::vec3(1.0f, 0.3f, 0.5f));
             shaderProgram.setMat4("model", model);
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
