@@ -29,6 +29,8 @@ unsigned int square_indices[] = { // note that we start from 0!
 };
 
 float degrees = 0.0f;
+float xtrans = 0.5f;
+float iterator = 0.05f;
 
 int main()
 {
@@ -96,7 +98,8 @@ int main()
         glBindTexture(GL_TEXTURE_2D, textureFace.ID);
 
         glm::mat4 trans = glm::mat4(1.0f);
-        trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
+        //trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
+        trans = glm::translate(trans, glm::vec3(xtrans, -0.5f, 0.0f));
         trans = glm::rotate(trans, glm::radians(degrees), glm::vec3(0.0f, 0.0f, 1.0f));
         trans = glm::rotate(trans, (float)glfwGetTime(),glm::vec3(0.0f, 1.0f, 0.0f));
         trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5));
@@ -110,7 +113,7 @@ int main()
 
 
         glm::mat4 trans2 = glm::mat4(1.0f);
-        trans2 = glm::translate(trans2, glm::vec3(-0.5f, 0.5f, 0.0f));
+        trans2 = glm::translate(trans2, glm::vec3(-xtrans, 0.5f, 0.0f));
         trans2 = glm::rotate(trans2, glm::radians(degrees), glm::vec3(0.0f, 0.0f, -1.0f));
         trans2 = glm::scale(trans2, glm::vec3(sin(glfwGetTime()), sin(glfwGetTime()), sin(glfwGetTime())));
 
@@ -162,16 +165,30 @@ GLFWwindow* screen_init()
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
-    int length = width > height ? height : width;
-    int x = width > height ? (width - length) / 2 : 0;
-    int y = height > width ? (height - length) / 2 : 0;
-    glViewport(x, y, length, length);
+    glViewport(0, 0, width, height);
+//    int length = width > height ? height : width;
+//    int x = width > height ? (width - length) / 2 : 0;
+//    int y = height > width ? (height - length) / 2 : 0;
+//    glViewport(x, y, length, length);
 }
 
 void processInput(GLFWwindow *window)
 {
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, true);
+    }
+
+    if(glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+        xtrans += iterator;
+    }
+
+    if(glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
+        xtrans -= iterator;
+    }
+
+    if (xtrans >= 0.5 || xtrans <= -0.5) {
+        xtrans = xtrans >= 0.5f ? 0.49f : -0.49f;
+        iterator = -iterator;
     }
 
     if(glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
