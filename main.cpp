@@ -18,6 +18,10 @@ float degrees = 0.0f;
 float xtrans = 0.5f;
 float iterator = 0.05f;
 
+glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+
 int main()
 {
     GLFWwindow* window = screen_init();
@@ -70,23 +74,27 @@ int main()
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, textureFace.ID);
 
-        glm::mat4 view = glm::mat4(1.0f);
-        // note that we’re translating the scene in the reverse direction
-        view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
-        glm::mat4 projection;
-        projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f,100.0f);
-
-        shaderProgram.setMat4("view", view);
-        shaderProgram.setMat4("projection", projection);
-        shaderProgram.use();
-
         glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
+        const float radius = 10.0f;
         for(unsigned int i = 0; i < 10; i++)
         {
+            float camX = (float) sin(glfwGetTime()) * radius;
+            float camZ = (float) cos(glfwGetTime()) * radius;
+            glm::mat4 view;
+            view = glm::lookAt(
+                    glm::vec3(camX, 0.0, camZ),
+                    glm::vec3(0.0, 0.0, 0.0),
+                    glm::vec3(0.0, 1.0, 0.0));
+
             glm::mat4 model = glm::mat4(1.0f);
             model = glm::translate(model, cubePositions[i]);
             float angle = 20.0f * i;
             model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f + angle),glm::vec3(0.5f, 1.0f, 0.0f));
+            glm::mat4 projection;
+            projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f,100.0f);
+
+            shaderProgram.setMat4("projection", projection);
+            shaderProgram.setMat4("view", view);
             shaderProgram.setMat4("model", model);
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
