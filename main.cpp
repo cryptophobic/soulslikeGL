@@ -78,13 +78,8 @@ int main()
         const float radius = 10.0f;
         for(unsigned int i = 0; i < 10; i++)
         {
-            float camX = (float) sin(glfwGetTime()) * radius;
-            float camZ = (float) cos(glfwGetTime()) * radius;
             glm::mat4 view;
-            view = glm::lookAt(
-                    glm::vec3(camX, 0.0, camZ),
-                    glm::vec3(0.0, 0.0, 0.0),
-                    glm::vec3(0.0, 1.0, 0.0));
+            view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 
             glm::mat4 model = glm::mat4(1.0f);
             model = glm::translate(model, cubePositions[i]);
@@ -151,24 +146,13 @@ void processInput(GLFWwindow *window)
         glfwSetWindowShouldClose(window, true);
     }
 
-    if(glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
-        xtrans += iterator;
-    }
-
-    if(glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
-        xtrans -= iterator;
-    }
-
-    if (xtrans >= 0.5 || xtrans <= -0.5) {
-        xtrans = xtrans >= 0.5f ? 0.49f : -0.49f;
-        iterator = -iterator;
-    }
-
-    if(glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
-        degrees = degrees + 1.0f >= 360.0f ? 0.0f : degrees + 1.0f;
-    }
-
-    if(glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
-        degrees = degrees - 1.0f <= 0.0f ? 360.0f : degrees - 1.0f;
-    }
+    const float cameraSpeed = 0.1f; // adjust accordingly
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        cameraPos += cameraSpeed * cameraFront;
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+        cameraPos -= cameraSpeed * cameraFront;
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+        cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+        cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
 }
