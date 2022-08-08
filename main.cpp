@@ -3,7 +3,6 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
 
 #include "common/Shader.h"
 #include "common/Texture.h"
@@ -95,7 +94,9 @@ int main()
             float angle = 20.0f * i;
             //model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f + angle),glm::vec3(0.5f, 1.0f, 0.0f));
             glm::mat4 projection;
-            projection = glm::perspective(glm::radians((float)fov), 800.0f / 600.0f, 0.1f, 100.0f);
+            int width, height;
+            glfwGetWindowSize(window, &width, &height);
+            projection = glm::perspective(glm::radians((float)fov), (float) width / (float) height    , 0.1f, 100.0f);
 
             shaderProgram.setMat4("projection", projection);
             shaderProgram.setMat4("view", view);
@@ -170,6 +171,12 @@ void processInput(GLFWwindow *window)
         cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+
+    if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS)
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    
 }
 
 void mouse_callback(GLFWwindow *window, double xpos, double ypos) {
@@ -210,3 +217,4 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
     if (fov < 1.0f) fov = 1.0f;
     if (fov > 45.0f) fov = 45.0f;
 }
+
