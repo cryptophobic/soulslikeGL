@@ -11,6 +11,7 @@
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow *window);
 GLFWwindow* screen_init();
 
@@ -23,7 +24,7 @@ glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
 double lastX = 400, lastY = 300;
-double yaw = -90.0f, pitch = 0;
+double yaw = -90.0f, pitch = 0, fov = 45;
 bool firstMouse = true;
 
 int main()
@@ -94,7 +95,7 @@ int main()
             float angle = 20.0f * i;
             //model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f + angle),glm::vec3(0.5f, 1.0f, 0.0f));
             glm::mat4 projection;
-            projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f,100.0f);
+            projection = glm::perspective(glm::radians((float)fov), 800.0f / 600.0f, 0.1f, 100.0f);
 
             shaderProgram.setMat4("projection", projection);
             shaderProgram.setMat4("view", view);
@@ -137,6 +138,7 @@ GLFWwindow* screen_init()
 
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwSetCursorPosCallback(window, mouse_callback);
+    glfwSetScrollCallback(window, scroll_callback);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     return window;
 }
@@ -197,4 +199,11 @@ void mouse_callback(GLFWwindow *window, double xpos, double ypos) {
     direction.z = (float) (sin(glm::radians(yaw)) * cos(glm::radians(pitch)));
 
     cameraFront = glm::normalize(direction);
+}
+
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+{
+    fov -= (float) yoffset;
+    if (fov < 1.0f) fov = 1.0f;
+    if (fov > 45.0f) fov = 45.0f;
 }
