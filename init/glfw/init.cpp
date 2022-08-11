@@ -1,0 +1,206 @@
+//
+// Created by dima on 11.08.22.
+//
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
+#include "init.h"
+#include "../../engine/Controller.h"
+#include "../../common/Texture.h"
+#include "../../common/Shader.h"
+#include "../../objects/cube.h"
+#include <stdexcept>
+
+engine::Controller controller;
+GLFWwindow *window = nullptr;
+unsigned int VBO, VAO;
+
+glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+
+double yaw = -90.0f, pitch = 0, fov = 45;
+
+glm::vec3 cubePositions[] = {
+        glm::vec3(0.0f, 0.0f, 0.0f),
+        glm::vec3(2.0f, 5.0f, -15.0f),
+        glm::vec3(-1.5f, -2.2f, -2.5f),
+        glm::vec3(-3.8f, -2.0f, -12.3f),
+        glm::vec3(2.4f, -0.4f, -3.5f),
+        glm::vec3(-1.7f, 3.0f, -7.5f),
+        glm::vec3(1.3f, -2.0f, -2.5f),
+        glm::vec3(1.5f, 2.0f, -2.5f),
+        glm::vec3(1.5f, 0.2f, -1.5f),
+        glm::vec3(-1.3f, 1.0f, -1.5f)
+};
+
+
+
+namespace init {
+    void Init::start(int argc, char *argv[]) {
+
+        glfw_create_window();
+        glad_init();
+
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+        controller.run();
+    }
+
+    GLFWwindow *Init::get_window() {
+        return window;
+    }
+
+    void Init::set_mouse_position_callback() {
+        if (window == nullptr) {
+            throw std::runtime_error("Window object is empty, need to run init::start first");
+        }
+        glfwSetCursorPosCallback(window, [](GLFWwindow *window, double xPos, double yPos) {
+            controller.mouseCallback(xPos, yPos);
+        });
+    }
+
+    void Init::set_scroll_callback() {
+        if (window == nullptr) {
+            throw std::runtime_error("Window object is empty, need to run init::start first");
+        }
+
+        glfwSetCursorPosCallback(window, [](GLFWwindow *window, double xOffset, double yOffset) {
+            controller.scrollCallback(xOffset, yOffset);
+        });
+    }
+
+    void Init::set_framebuffer_size_callback() {
+        glfwSetFramebufferSizeCallback(window, [](GLFWwindow *window, int width, int height) {
+            controller.framebufferSizeCallback(width, height);
+        });
+    }
+
+
+
+    void Init::set_viewport_size(int x, int y, int width, int height) {
+        glViewport(x, y, width, height);
+    }
+
+    void Init::glfw_create_window() {
+        glfwInit();
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+#ifdef __APPLE__
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+#endif
+
+        window = glfwCreateWindow(800, 600, "Murka Window", nullptr, nullptr);
+        if (window == nullptr) {
+            terminate();
+            throw std::runtime_error("Failed to create GLFW window");
+        }
+        glfwMakeContextCurrent(window);
+    }
+
+    void Init::glad_init() {
+        if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
+            throw std::runtime_error("Failed to initialize GLAD");
+        }
+    }
+
+    void Init::terminate() {
+        glfwTerminate();
+    }
+
+    void Init::process_input() {
+        if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+            glfwSetWindowShouldClose(window, true);
+        }
+
+//        glm::vec3 movingDirection = cameraFront;
+//        movingDirection[1] = 0.0f;
+//
+//        const float cameraSpeed = 2.5f * deltaTime; // adjust accordingly
+//        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+//            cameraPos += cameraSpeed * movingDirection;
+//        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+//            cameraPos -= cameraSpeed * movingDirection;
+//        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+//            cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+//        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+//            cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+
+        if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS)
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    }
+
+    void Init::load_VAO_VBO() {
+        glGenVertexArrays(1, &VAO);
+        glGenBuffers(1, &VBO);
+
+        glBindVertexArray(VAO);
+
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(objects::cube_vertices), objects::cube_vertices, GL_STATIC_DRAW);
+
+        // position attribute
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)nullptr);
+        glEnableVertexAttribArray(0);
+        // texture coord attribute
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+        glEnableVertexAttribArray(1);
+    }
+
+    void Init::enable_gl_depth_test() {
+        glEnable(GL_DEPTH_TEST);
+    }
+
+    void Init::event_loop(
+            common::Texture textureContainer,
+            common::Texture textureFace,
+            common::Shader shaderProgram
+            ) {
+        while(!glfwWindowShouldClose(Init::get_window())) {
+            auto currentFrame = (float) glfwGetTime();
+//            deltaTime = currentFrame - lastFrame;
+//            lastFrame = currentFrame;
+
+            // input
+            Init::process_input();
+            glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+            glActiveTexture(GL_TEXTURE0); // activate texture unit first
+            glBindTexture(GL_TEXTURE_2D, textureContainer.ID);
+            glActiveTexture(GL_TEXTURE1);
+            glBindTexture(GL_TEXTURE_2D, textureFace.ID);
+
+            glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
+            const float radius = 10.0f;
+            for(unsigned int i = 0; i < 10; i++)
+            {
+                glm::mat4 view;
+                view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+
+                glm::mat4 model = glm::mat4(1.0f);
+                model = glm::translate(model, cubePositions[i]);
+                float angle = 20.0f * i;
+                model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f + angle),glm::vec3(0.5f, 1.0f, 0.0f));
+                glm::mat4 projection;
+                int width, height;
+                glfwGetWindowSize(Init::get_window(), &width, &height);
+                projection = glm::perspective(glm::radians((float)fov), (float) width / (float) height    , 0.1f, 100.0f);
+
+                shaderProgram.setMat4("projection", projection);
+                shaderProgram.setMat4("view", view);
+                shaderProgram.setMat4("model", model);
+                glDrawArrays(GL_TRIANGLES, 0, 36);
+            }
+
+            // check and call events and swap the buffers
+            glfwPollEvents();
+            glfwSwapBuffers(Init::get_window());
+        }
+    }
+}
