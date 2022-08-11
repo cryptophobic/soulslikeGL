@@ -3,7 +3,6 @@
 //
 
 //TODO: all the OpenGL must be isolated in init/glfw
-//#include <glad/glad.h>
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "Controller.h"
@@ -62,19 +61,9 @@ namespace engine {
         Init::set_mouse_position_callback();
         Init::set_scroll_callback();
         Init::set_framebuffer_size_callback();
-
-        common::Shader shaderProgram("../shaders/shader.vert", "../shaders/shader.frag");
-        common::Texture textureContainer("../textures/container.jpg");
-        common::Texture textureFace("../textures/awesomeface.png", GL_RGBA);
-
-        Init::load_VAO_VBO();
-
-        shaderProgram.use();
-        shaderProgram.setInt("texture1", 0); // or with shader class
-        shaderProgram.setInt("texture2", 1); // or with shader class
-
-        Init::enable_gl_depth_test();
-        Init::event_loop(textureContainer, textureFace, shaderProgram);
+        Init::set_shaders();
+        Init::set_textures();
+        Init::event_loop();
         Init::terminate();
     }
 } // engine

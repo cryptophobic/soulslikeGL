@@ -16,6 +16,9 @@
 engine::Controller controller;
 GLFWwindow *window = nullptr;
 unsigned int VBO, VAO;
+common::Shader shaderProgram;
+common::Texture textureContainer;
+common::Texture textureFace;
 
 glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
@@ -45,12 +48,9 @@ namespace init {
         glad_init();
 
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        glEnable(GL_DEPTH_TEST);
 
         controller.run();
-    }
-
-    GLFWwindow *Init::get_window() {
-        return window;
     }
 
     void Init::set_mouse_position_callback() {
@@ -77,8 +77,6 @@ namespace init {
             controller.framebufferSizeCallback(width, height);
         });
     }
-
-
 
     void Init::set_viewport_size(int x, int y, int width, int height) {
         glViewport(x, y, width, height);
@@ -111,6 +109,15 @@ namespace init {
         glfwTerminate();
     }
 
+    void Init::set_shaders() {
+        shaderProgram.set("../shaders/shader.vert", "../shaders/shader.frag");
+    }
+
+    void Init::set_textures() {
+        textureContainer.set("../textures/container.jpg");
+        textureFace.set("../textures/awesomeface.png", GL_RGBA);
+    }
+
     void Init::process_input() {
         if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
             glfwSetWindowShouldClose(window, true);
@@ -135,7 +142,7 @@ namespace init {
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     }
 
-    void Init::load_VAO_VBO() {
+    void Init::event_loop() {
         glGenVertexArrays(1, &VAO);
         glGenBuffers(1, &VBO);
 
@@ -150,18 +157,12 @@ namespace init {
         // texture coord attribute
         glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
         glEnableVertexAttribArray(1);
-    }
 
-    void Init::enable_gl_depth_test() {
-        glEnable(GL_DEPTH_TEST);
-    }
+        shaderProgram.use();
+        shaderProgram.setInt("texture1", 0); // or with shader class
+        shaderProgram.setInt("texture2", 1); // or with shader class
 
-    void Init::event_loop(
-            common::Texture textureContainer,
-            common::Texture textureFace,
-            common::Shader shaderProgram
-            ) {
-        while(!glfwWindowShouldClose(Init::get_window())) {
+        while(!glfwWindowShouldClose(window)) {
             auto currentFrame = (float) glfwGetTime();
 //            deltaTime = currentFrame - lastFrame;
 //            lastFrame = currentFrame;
@@ -189,7 +190,7 @@ namespace init {
                 model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f + angle),glm::vec3(0.5f, 1.0f, 0.0f));
                 glm::mat4 projection;
                 int width, height;
-                glfwGetWindowSize(Init::get_window(), &width, &height);
+                glfwGetWindowSize(window, &width, &height);
                 projection = glm::perspective(glm::radians((float)fov), (float) width / (float) height    , 0.1f, 100.0f);
 
                 shaderProgram.setMat4("projection", projection);
@@ -200,7 +201,7 @@ namespace init {
 
             // check and call events and swap the buffers
             glfwPollEvents();
-            glfwSwapBuffers(Init::get_window());
+            glfwSwapBuffers(window);
         }
     }
 }

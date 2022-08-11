@@ -12,6 +12,7 @@
 #include <iostream>
 #include <glm/glm.hpp>
 
+// TODO: refactoring
 namespace common {
 
     class Shader {
@@ -19,7 +20,7 @@ namespace common {
         // the program ID
         unsigned int ID;
         // constructor reads and builds the shader
-        Shader(const char *vertexPath, const char *fragmentPath);
+        void set(const char *vertexPath, const char *fragmentPath);
         // use/activate the shader
         void use();
         // utility uniform functions

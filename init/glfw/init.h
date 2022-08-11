@@ -22,11 +22,10 @@ namespace init {
         static void set_scroll_callback();
         static void set_framebuffer_size_callback();
         static void set_viewport_size(int x, int y, int width, int height);
+        static void set_shaders();
+        static void set_textures();
         static void process_input();
-        static GLFWwindow *get_window();
-        static void load_VAO_VBO();
-        static void enable_gl_depth_test();
-        static void event_loop(common::Texture, common::Texture ,common::Shader);
+        static void event_loop();
     private:
         static void glfw_create_window();
         static void glad_init();

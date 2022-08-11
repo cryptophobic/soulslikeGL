@@ -4,7 +4,7 @@
 #include "../images/stb_image.h"
 
 namespace common {
-    Texture::Texture(const char *resourcePth, GLenum format) {
+    void Texture::set(const char *resourcePth, GLenum format) {
         glGenTextures(1, &ID);
         glBindTexture(GL_TEXTURE_2D, ID);
         // set the texture wrapping parameters
