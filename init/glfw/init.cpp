@@ -24,6 +24,9 @@ glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
+float deltaTime = 0.0f; // Time between current frame and last frame
+float lastFrame = 0.0f; // Time of last frame
+
 double yaw = -90.0f, pitch = 0, fov = 45;
 
 glm::vec3 cubePositions[] = {
@@ -123,18 +126,18 @@ namespace init {
             glfwSetWindowShouldClose(window, true);
         }
 
-//        glm::vec3 movingDirection = cameraFront;
-//        movingDirection[1] = 0.0f;
-//
-//        const float cameraSpeed = 2.5f * deltaTime; // adjust accordingly
-//        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-//            cameraPos += cameraSpeed * movingDirection;
-//        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-//            cameraPos -= cameraSpeed * movingDirection;
-//        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-//            cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
-//        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-//            cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+        glm::vec3 movingDirection = cameraFront;
+        movingDirection[1] = 0.0f;
+
+        const float cameraSpeed = 2.5f * deltaTime; // adjust accordingly
+        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+            cameraPos += cameraSpeed * movingDirection;
+        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+            cameraPos -= cameraSpeed * movingDirection;
+        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+            cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+            cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
 
         if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
@@ -164,8 +167,8 @@ namespace init {
 
         while(!glfwWindowShouldClose(window)) {
             auto currentFrame = (float) glfwGetTime();
-//            deltaTime = currentFrame - lastFrame;
-//            lastFrame = currentFrame;
+            deltaTime = currentFrame - lastFrame;
+            lastFrame = currentFrame;
 
             // input
             Init::process_input();

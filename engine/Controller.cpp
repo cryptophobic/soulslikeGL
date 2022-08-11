@@ -61,9 +61,12 @@ namespace engine {
         Init::set_mouse_position_callback();
         Init::set_scroll_callback();
         Init::set_framebuffer_size_callback();
+
         Init::set_shaders();
         Init::set_textures();
+
         Init::event_loop();
+
         Init::terminate();
     }
 } // engine
