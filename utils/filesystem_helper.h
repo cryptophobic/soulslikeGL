@@ -11,15 +11,13 @@
 
 namespace fs = std::filesystem;
 
-
 static std::string root;
 
 class FileSystem
 {
 
 public:
-    static std::string getPath(const std::string& path)
-    {
+    static std::string getPath(const std::string& path) {
         return root + std::string("/") + path;
     }
 
