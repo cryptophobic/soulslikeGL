@@ -44,7 +44,7 @@ glm::vec3 cubePositions[] = {
 
 
 
-namespace init {
+namespace render {
     void Init::start(int argc, char *argv[]) {
 
         glfw_create_window();
@@ -58,7 +58,7 @@ namespace init {
 
     void Init::set_mouse_position_callback() {
         if (window == nullptr) {
-            throw std::runtime_error("Window object is empty, need to run init::start first");
+            throw std::runtime_error("Window object is empty, need to run render::start first");
         }
         glfwSetCursorPosCallback(window, [](GLFWwindow *window, double xPos, double yPos) {
             controller.mouseCallback(xPos, yPos);
@@ -67,7 +67,7 @@ namespace init {
 
     void Init::set_scroll_callback() {
         if (window == nullptr) {
-            throw std::runtime_error("Window object is empty, need to run init::start first");
+            throw std::runtime_error("Window object is empty, need to run render::start first");
         }
 
         glfwSetCursorPosCallback(window, [](GLFWwindow *window, double xOffset, double yOffset) {

@@ -2,7 +2,7 @@
 // Created by dima on 11.08.22.
 //
 
-//TODO: all the OpenGL must be isolated in init/glfw
+//TODO: all the OpenGL must be isolated in render/glfw
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "Controller.h"
@@ -11,7 +11,7 @@
 #include "../common/Texture.h"
 #include "../objects/cube.h"
 
-using namespace init;
+using namespace render;
 
 namespace engine {
 

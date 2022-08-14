@@ -13,7 +13,7 @@
 const int SCREEN_FPS = 60;
 const int SCREEN_TICK_PER_FRAME = 1000 / SCREEN_FPS;
 
-namespace init {
+namespace render {
     class Init {
     public:
         static void start(int argc, char* argv[]);

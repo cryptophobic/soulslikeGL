@@ -6,5 +6,5 @@ set(CMAKE_CXX_STANDARD 23)
 set(ALL_LIBS glfw3 GL X11 pthread Xrandr Xi dl)
 
 
-add_executable(soulslikeGL main.cpp glad.c common/Shader.cpp common/Shader.h images/stb_image.cpp common/Texture.cpp common/Texture.h objects/cube.h objects/square.h init.h init/glfw/init.h init/glfw/init.cpp engine/Controller.cpp engine/Controller.h)
+add_executable(soulslikeGL main.cpp glad.c common/Shader.cpp common/Shader.h images/stb_image.cpp common/Texture.cpp common/Texture.h objects/cube.h objects/square.h init.h render/glfw/init.h render/glfw/init.cpp engine/Controller.cpp engine/Controller.h objects/camera/Camera.cpp objects/camera/Camera.h)
 target_link_libraries(soulslikeGL ${ALL_LIBS})

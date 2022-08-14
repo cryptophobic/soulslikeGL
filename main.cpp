@@ -2,6 +2,6 @@
 
 int main(int argc, char* argv[])
 {
-    init::Init::start(argc, argv);
+    render::Init::start(argc, argv);
     return 0;
 }
