@@ -5,6 +5,6 @@
 #ifndef SOULSLIKEGL_INIT_H
 #define SOULSLIKEGL_INIT_H
 
-#include "render/glfw/init.h"
+#include "render/glfw/app.h"
 
 #endif //SOULSLIKEGL_INIT_H

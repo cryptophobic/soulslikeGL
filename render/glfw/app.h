@@ -2,8 +2,8 @@
 // Created by dima on 11.08.22.
 //
 
-#ifndef SOULSLIKEGL_GLFW_INIT_H
-#define SOULSLIKEGL_GLFW_INIT_H
+#ifndef SOULSLIKEGL_GLFW_APP_H
+#define SOULSLIKEGL_GLFW_APP_H
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -14,7 +14,7 @@ const int SCREEN_FPS = 60;
 const int SCREEN_TICK_PER_FRAME = 1000 / SCREEN_FPS;
 
 namespace render {
-    class Init {
+    class App {
     public:
         static void start(int argc, char* argv[]);
         static void terminate();
@@ -34,4 +34,4 @@ namespace render {
 
 
 
-#endif //SOULSLIKEGL_GLFW_INIT_H
+#endif //SOULSLIKEGL_GLFW_APP_H

@@ -1,0 +1,21 @@
+//
+// Created by dima on 14.08.22.
+//
+
+#ifndef SOULSLIKEGL_CONFIG_H
+#define SOULSLIKEGL_CONFIG_H
+
+namespace settings {
+    const struct {
+        const struct {
+            int width;
+            int height;
+        } resolution = { .width = 800, .height = 600};
+    } screen;
+
+    const struct {
+        const char *title;
+    } window { .title = "Murka Window" };
+}
+
+#endif //SOULSLIKEGL_CONFIG_H

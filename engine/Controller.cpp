@@ -5,6 +5,8 @@
 //TODO: all the OpenGL must be isolated in render/glfw
 #include <glm/gtc/matrix_transform.hpp>
 
+#include <iostream>
+#include <array>
 #include "Controller.h"
 #include "../init.h"
 #include "../common/Shader.h"
@@ -15,7 +17,7 @@ using namespace render;
 
 namespace engine {
 
-    void engine::Controller::mouseCallback(double xPos, double yPos) {
+    void engine::Controller::mousePositionCallback(double xPos, double yPos) {
 
         if (firstMouse) {
             lastX = xPos;
@@ -53,20 +55,20 @@ namespace engine {
         if (fov > 45.0f) fov = 45.0f;
     }
 
-    void Controller::framebufferSizeCallback(int width, int height) {
-        Init::set_viewport_size(0, 0, width, height);
+    std::array<int, 4> Controller::getViewportVector(int width, int height) {
+        return {0, 0, width, height};
     }
 
     void Controller::run() {
-        Init::set_mouse_position_callback();
-        Init::set_scroll_callback();
-        Init::set_framebuffer_size_callback();
+//        App::set_mouse_position_callback();
+//        App::set_scroll_callback();
+//        App::set_framebuffer_size_callback();
 
-        Init::set_shaders();
-        Init::set_textures();
+        App::set_shaders();
+        App::set_textures();
 
-        Init::event_loop();
+        App::event_loop();
 
-        Init::terminate();
+        App::terminate();
     }
 } // engine

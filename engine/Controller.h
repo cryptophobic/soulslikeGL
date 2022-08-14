@@ -5,14 +5,16 @@
 #ifndef SOULSLIKEGL_CONTROLLER_H
 #define SOULSLIKEGL_CONTROLLER_H
 
+#include <array>
+
 namespace engine {
 
     class Controller {
     public:
         void run();
-        void mouseCallback(double xPos, double yPos);
+        void mousePositionCallback(double xPos, double yPos);
         void scrollCallback(double xOffset, double yOffset);
-        void framebufferSizeCallback(int width, int height);
+        std::array<int, 4> getViewportVector(int width, int height);
     private:
         double lastX = 400, lastY = 300;
         double yaw = -90.0f, pitch = 0, fov = 45;

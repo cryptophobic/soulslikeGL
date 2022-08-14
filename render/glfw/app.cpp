@@ -6,12 +6,15 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "init.h"
+#include "app.h"
 #include "../../engine/Controller.h"
 #include "../../common/Texture.h"
 #include "../../common/Shader.h"
 #include "../../objects/cube.h"
+#include "../../settings/config.h"
+#include "../../utils/filesystem_helper.h"
 #include <stdexcept>
+#include <array>
 
 engine::Controller controller;
 GLFWwindow *window = nullptr;
@@ -45,27 +48,31 @@ glm::vec3 cubePositions[] = {
 
 
 namespace render {
-    void Init::start(int argc, char *argv[]) {
+    void App::start(int argc, char *argv[]) {
+
+        FileSystem::setApplicationPath(std::string(argv[0]));
 
         glfw_create_window();
         glad_init();
 
-        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-        glEnable(GL_DEPTH_TEST);
+        set_mouse_position_callback();
+        set_scroll_callback();
+        set_framebuffer_size_callback();
+
 
         controller.run();
     }
 
-    void Init::set_mouse_position_callback() {
+    void App::set_mouse_position_callback() {
         if (window == nullptr) {
             throw std::runtime_error("Window object is empty, need to run render::start first");
         }
         glfwSetCursorPosCallback(window, [](GLFWwindow *window, double xPos, double yPos) {
-            controller.mouseCallback(xPos, yPos);
+            controller.mousePositionCallback(xPos, yPos);
         });
     }
 
-    void Init::set_scroll_callback() {
+    void App::set_scroll_callback() {
         if (window == nullptr) {
             throw std::runtime_error("Window object is empty, need to run render::start first");
         }
@@ -75,17 +82,15 @@ namespace render {
         });
     }
 
-    void Init::set_framebuffer_size_callback() {
+    void App::set_framebuffer_size_callback() {
         glfwSetFramebufferSizeCallback(window, [](GLFWwindow *window, int width, int height) {
-            controller.framebufferSizeCallback(width, height);
+            // TODO: looks ugly
+            std::array<int, 4> viewport = controller.getViewportVector(width, height);
+            glViewport(viewport[0], viewport[1], viewport[2], viewport[3]);
         });
     }
 
-    void Init::set_viewport_size(int x, int y, int width, int height) {
-        glViewport(x, y, width, height);
-    }
-
-    void Init::glfw_create_window() {
+    void App::glfw_create_window() {
         glfwInit();
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -94,34 +99,39 @@ namespace render {
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
 
-        window = glfwCreateWindow(800, 600, "Murka Window", nullptr, nullptr);
+        window = glfwCreateWindow(
+                settings::screen.resolution.width,
+                settings::screen.resolution.height,
+                settings::window.title, nullptr, nullptr);
         if (window == nullptr) {
             terminate();
             throw std::runtime_error("Failed to create GLFW window");
         }
         glfwMakeContextCurrent(window);
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     }
 
-    void Init::glad_init() {
+    void App::glad_init() {
         if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
             throw std::runtime_error("Failed to initialize GLAD");
         }
+        glEnable(GL_DEPTH_TEST);
     }
 
-    void Init::terminate() {
+    void App::terminate() {
         glfwTerminate();
     }
 
-    void Init::set_shaders() {
-        shaderProgram.set("../shaders/shader.vert", "../shaders/shader.frag");
+    void App::set_shaders() {
+        shaderProgram.set(FileSystem::getPath("shaders/shader.vert").c_str(), FileSystem::getPath("shaders/shader.frag").c_str());
     }
 
-    void Init::set_textures() {
-        textureContainer.set("../textures/container.jpg");
-        textureFace.set("../textures/awesomeface.png", GL_RGBA);
+    void App::set_textures() {
+        textureContainer.set(FileSystem::getPath("textures/container.jpg").c_str());
+        textureFace.set(FileSystem::getPath("textures/awesomeface.png").c_str(), GL_RGBA);
     }
 
-    void Init::process_input() {
+    void App::process_input() {
         if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
             glfwSetWindowShouldClose(window, true);
         }
@@ -145,7 +155,7 @@ namespace render {
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     }
 
-    void Init::event_loop() {
+    void App::event_loop() {
         glGenVertexArrays(1, &VAO);
         glGenBuffers(1, &VBO);
 
@@ -171,7 +181,7 @@ namespace render {
             lastFrame = currentFrame;
 
             // input
-            Init::process_input();
+            App::process_input();
             glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
