@@ -18,6 +18,7 @@
 
 engine::Controller controller;
 GLFWwindow *window = nullptr;
+
 unsigned int VBO, VAO;
 common::Shader shaderProgram;
 common::Texture textureContainer;
@@ -58,68 +59,15 @@ namespace render {
         set_mouse_position_callback();
         set_scroll_callback();
         set_framebuffer_size_callback();
+        set_scene();
 
+        //App::event_loop();
 
         controller.run();
     }
 
-    void App::set_mouse_position_callback() {
-        if (window == nullptr) {
-            throw std::runtime_error("Window object is empty, need to run render::start first");
-        }
-        glfwSetCursorPosCallback(window, [](GLFWwindow *window, double xPos, double yPos) {
-            controller.mousePositionCallback(xPos, yPos);
-        });
-    }
-
-    void App::set_scroll_callback() {
-        if (window == nullptr) {
-            throw std::runtime_error("Window object is empty, need to run render::start first");
-        }
-
-        glfwSetCursorPosCallback(window, [](GLFWwindow *window, double xOffset, double yOffset) {
-            controller.scrollCallback(xOffset, yOffset);
-        });
-    }
-
-    void App::set_framebuffer_size_callback() {
-        glfwSetFramebufferSizeCallback(window, [](GLFWwindow *window, int width, int height) {
-            // TODO: looks ugly
-            std::array<int, 4> viewport = controller.getViewportVector(width, height);
-            glViewport(viewport[0], viewport[1], viewport[2], viewport[3]);
-        });
-    }
-
-    void App::glfw_create_window() {
-        glfwInit();
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-#ifdef __APPLE__
-        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-#endif
-
-        window = glfwCreateWindow(
-                settings::screen.resolution.width,
-                settings::screen.resolution.height,
-                settings::window.title, nullptr, nullptr);
-        if (window == nullptr) {
-            terminate();
-            throw std::runtime_error("Failed to create GLFW window");
-        }
-        glfwMakeContextCurrent(window);
-        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    }
-
-    void App::glad_init() {
-        if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
-            throw std::runtime_error("Failed to initialize GLAD");
-        }
-        glEnable(GL_DEPTH_TEST);
-    }
-
-    void App::terminate() {
-        glfwTerminate();
+    void App::set_scene() {
+        controller.getCurrentScene();
     }
 
     void App::set_shaders() {
@@ -174,6 +122,10 @@ namespace render {
         shaderProgram.use();
         shaderProgram.setInt("texture1", 0); // or with shader class
         shaderProgram.setInt("texture2", 1); // or with shader class
+        glActiveTexture(GL_TEXTURE0); // activate texture unit first
+        glBindTexture(GL_TEXTURE_2D, textureContainer.ID);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, textureFace.ID);
 
         while(!glfwWindowShouldClose(window)) {
             auto currentFrame = (float) glfwGetTime();
@@ -185,10 +137,6 @@ namespace render {
             glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-            glActiveTexture(GL_TEXTURE0); // activate texture unit first
-            glBindTexture(GL_TEXTURE_2D, textureContainer.ID);
-            glActiveTexture(GL_TEXTURE1);
-            glBindTexture(GL_TEXTURE_2D, textureFace.ID);
 
             glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
             const float radius = 10.0f;
@@ -216,5 +164,57 @@ namespace render {
             glfwPollEvents();
             glfwSwapBuffers(window);
         }
+    }
+
+    void App::set_mouse_position_callback() {
+        glfwSetCursorPosCallback(window, [](GLFWwindow *window, double xPos, double yPos) {
+            controller.mousePositionCallback(xPos, yPos);
+        });
+    }
+
+    void App::set_scroll_callback() {
+        glfwSetCursorPosCallback(window, [](GLFWwindow *window, double xOffset, double yOffset) {
+            controller.scrollCallback(xOffset, yOffset);
+        });
+    }
+
+    void App::set_framebuffer_size_callback() {
+        glfwSetFramebufferSizeCallback(window, [](GLFWwindow *window, int width, int height) {
+            // TODO: looks ugly
+            std::array<int, 4> viewport = controller.getViewportVector(width, height);
+            glViewport(viewport[0], viewport[1], viewport[2], viewport[3]);
+        });
+    }
+
+    void App::glad_init() {
+        if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
+            throw std::runtime_error("Failed to initialize GLAD");
+        }
+        glEnable(GL_DEPTH_TEST);
+    }
+
+    void App::terminate() {
+        glfwTerminate();
+    }
+
+    void App::glfw_create_window() {
+        glfwInit();
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+#ifdef __APPLE__
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+#endif
+
+        window = glfwCreateWindow(
+                settings::screen.resolution.width,
+                settings::screen.resolution.height,
+                settings::window.title, nullptr, nullptr);
+        if (window == nullptr) {
+            terminate();
+            throw std::runtime_error("Failed to create GLFW window");
+        }
+        glfwMakeContextCurrent(window);
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     }
 }

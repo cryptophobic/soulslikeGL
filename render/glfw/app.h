@@ -18,16 +18,16 @@ namespace render {
     public:
         static void start(int argc, char* argv[]);
         static void terminate();
-        static void set_mouse_position_callback();
-        static void set_scroll_callback();
-        static void set_framebuffer_size_callback();
-        static void set_viewport_size(int x, int y, int width, int height);
         static void set_shaders();
         static void set_textures();
         static void process_input();
         static void event_loop();
     private:
+        static void set_mouse_position_callback();
+        static void set_scroll_callback();
+        static void set_framebuffer_size_callback();
         static void glfw_create_window();
+        static void set_scene();
         static void glad_init();
     };
 }

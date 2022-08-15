@@ -2,16 +2,11 @@
 // Created by dima on 11.08.22.
 //
 
-//TODO: all the OpenGL must be isolated in render/glfw
 #include <glm/gtc/matrix_transform.hpp>
 
-#include <iostream>
 #include <array>
 #include "Controller.h"
 #include "../init.h"
-#include "../common/Shader.h"
-#include "../common/Texture.h"
-#include "../objects/cube.h"
 
 using namespace render;
 
@@ -60,9 +55,6 @@ namespace engine {
     }
 
     void Controller::run() {
-//        App::set_mouse_position_callback();
-//        App::set_scroll_callback();
-//        App::set_framebuffer_size_callback();
 
         App::set_shaders();
         App::set_textures();
@@ -70,5 +62,9 @@ namespace engine {
         App::event_loop();
 
         App::terminate();
+    }
+
+    world::Scene Controller::getCurrentScene() {
+        return {};
     }
 } // engine

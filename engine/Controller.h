@@ -6,6 +6,7 @@
 #define SOULSLIKEGL_CONTROLLER_H
 
 #include <array>
+#include "../world/Scene.h"
 
 namespace engine {
 
@@ -15,7 +16,9 @@ namespace engine {
         void mousePositionCallback(double xPos, double yPos);
         void scrollCallback(double xOffset, double yOffset);
         std::array<int, 4> getViewportVector(int width, int height);
+        world::Scene getCurrentScene();
     private:
+        world::Scene scene;
         double lastX = 400, lastY = 300;
         double yaw = -90.0f, pitch = 0, fov = 45;
         bool firstMouse = true;
