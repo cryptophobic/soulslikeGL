@@ -13,6 +13,7 @@
 #include "../../objects/cube.h"
 #include "../../settings/config.h"
 #include "../../utils/filesystem_helper.h"
+#include "../../objects/square.h"
 #include <stdexcept>
 #include <array>
 
@@ -104,6 +105,7 @@ namespace render {
     }
 
     void App::event_loop() {
+
         glGenVertexArrays(1, &VAO);
         glGenBuffers(1, &VBO);
 
