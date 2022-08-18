@@ -111,7 +111,6 @@ namespace render {
                 objects::cube_vertices + sizeof objects::cube_vertices / sizeof objects::cube_vertices[0]
                 );
 
-
         glGenVertexArrays(1, &VAO);
         glGenBuffers(1, &VBO);
 

@@ -10,6 +10,8 @@ namespace render {
     }
 
     void SceneRenderer::drawScene() {
-
+        // foreach (scene.objects)
+        // if object is not initialized
+        //
     }
 } // render

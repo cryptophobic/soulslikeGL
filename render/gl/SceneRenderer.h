@@ -6,6 +6,7 @@
 #define SOULSLIKEGL_SCENERENDERER_H
 
 #include <vector>
+#include <map>
 #include "../../world/Scene.h"
 #include "common/Shader.h"
 #include "common/Texture.h"
@@ -18,13 +19,16 @@ namespace render {
 
     class SceneRenderer {
     public:
-        void setScene(world::Scene scene);
+        void setScene(world::Scene);
         void drawScene();
     private:
         world::Scene scene;
-        std::vector<unsigned int> VBOs{}, VAOs{};
-        std::vector<common::Shader *> shaderPrograms{};
-        std::vector<common::Texture> textures{};
+        std::map<std::string, int> VBOs{}, VAOs{};
+        std::map<std::string, common::Shader*> shaderPrograms{};
+        std::map<std::string, common::Texture*> textures{};
+        //std::vector<unsigned int> VBOs{}, VAOs{};
+        //std::vector<common::Shader *> shaderPrograms{};
+        //std::vector<common::Texture> textures{};
 
     };
 
