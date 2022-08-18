@@ -7,8 +7,8 @@
 
 #include <vector>
 #include "../../world/Scene.h"
-#include "../../common/Shader.h"
-#include "../../common/Texture.h"
+#include "common/Shader.h"
+#include "common/Texture.h"
 
 namespace render {
 

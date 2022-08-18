@@ -1,7 +1,7 @@
 #include <glad/glad.h>
 #include <iostream>
 #include "Texture.h"
-#include "../images/stb_image.h"
+#include "../../../images/stb_image.h"
 
 namespace common {
     void Texture::set(const char *resourcePth, GLenum format) {

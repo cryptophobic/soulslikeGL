@@ -8,8 +8,8 @@
 
 #include "app.h"
 #include "../../engine/Controller.h"
-#include "../../common/Texture.h"
-#include "../../common/Shader.h"
+#include "common/Texture.h"
+#include "common/Shader.h"
 #include "../../objects/cube.h"
 #include "../../settings/config.h"
 #include "../../utils/filesystem_helper.h"
@@ -106,13 +106,21 @@ namespace render {
 
     void App::event_loop() {
 
+        std::vector<GLfloat> vertexData(
+                objects::cube_vertices,
+                objects::cube_vertices + sizeof objects::cube_vertices / sizeof objects::cube_vertices[0]
+                );
+
+
         glGenVertexArrays(1, &VAO);
         glGenBuffers(1, &VBO);
 
         glBindVertexArray(VAO);
 
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(objects::cube_vertices), objects::cube_vertices, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, (GLsizeiptr) (vertexData.size() * sizeof(GLfloat)), vertexData.data(), GL_STATIC_DRAW);
+
+        //glBufferData(GL_ARRAY_BUFFER, sizeof(objects::cube_vertices), objects::cube_vertices, GL_STATIC_DRAW);
 
         // position attribute
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)nullptr);

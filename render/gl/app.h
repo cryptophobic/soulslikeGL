@@ -7,8 +7,8 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include "../../common/Texture.h"
-#include "../../common/Shader.h"
+#include "common/Texture.h"
+#include "common/Shader.h"
 
 const int SCREEN_FPS = 60;
 const int SCREEN_TICK_PER_FRAME = 1000 / SCREEN_FPS;
