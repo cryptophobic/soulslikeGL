@@ -8,6 +8,8 @@
 namespace world {
 
     class Scene {
+    public:
+
 
     };
 

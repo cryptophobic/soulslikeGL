@@ -5,10 +5,14 @@
 #ifndef SOULSLIKEGL_WORLD_OBJECT_H
 #define SOULSLIKEGL_WORLD_OBJECT_H
 
+#include <vector>
+
 namespace world {
 
     class Object {
     public:
+        std::vector<float> shape;
+
     };
 
 } // world
