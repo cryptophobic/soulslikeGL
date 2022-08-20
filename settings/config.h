@@ -16,6 +16,16 @@ namespace settings {
     const struct {
         const char *title;
     } window { .title = "Murka Window" };
+
+    const struct {
+        const char *vertexShaderDefaultPAth;
+        const char *fragmentShaderDefaultPAth;
+        const char *textureDefaultPath;
+    } rendering {
+        .vertexShaderDefaultPAth = "shaders/shader.vert",
+        .fragmentShaderDefaultPAth = "shaders/shader.frag",
+        .textureDefaultPath = "textures/container.jpg"
+    };
 }
 
 #endif //SOULSLIKEGL_CONFIG_H

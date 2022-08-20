@@ -106,10 +106,10 @@ namespace render {
 
     void App::event_loop() {
 
-        std::vector<GLfloat> vertexData(
-                objects::cube_vertices,
-                objects::cube_vertices + sizeof objects::cube_vertices / sizeof objects::cube_vertices[0]
-                );
+//        std::vector<GLfloat> vertexData(
+//                objects::cube_vertices,
+//                objects::cube_vertices + sizeof objects::cube_vertices / sizeof objects::cube_vertices[0]
+//                );
 
         glGenVertexArrays(1, &VAO);
         glGenBuffers(1, &VBO);
@@ -117,7 +117,7 @@ namespace render {
         glBindVertexArray(VAO);
 
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
-        glBufferData(GL_ARRAY_BUFFER, (GLsizeiptr) (vertexData.size() * sizeof(GLfloat)), vertexData.data(), GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, (GLsizeiptr) (objects::cube_vertices.size() * sizeof(GLfloat)), objects::cube_vertices.data(), GL_STATIC_DRAW);
 
         //glBufferData(GL_ARRAY_BUFFER, sizeof(objects::cube_vertices), objects::cube_vertices, GL_STATIC_DRAW);
 
@@ -149,19 +149,22 @@ namespace render {
 
             glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
             const float radius = 10.0f;
+            glm::mat4 view;
+            view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+
+            glm::mat4 projection;
+            int width, height;
+            glfwGetWindowSize(window, &width, &height);
+            projection = glm::perspective(glm::radians((float)fov), (float) width / (float) height    , 0.1f, 100.0f);
+
             for(unsigned int i = 0; i < 10; i++)
             {
-                glm::mat4 view;
-                view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-
                 glm::mat4 model = glm::mat4(1.0f);
                 model = glm::translate(model, cubePositions[i]);
                 float angle = 20.0f * i;
-                model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f + angle),glm::vec3(0.5f, 1.0f, 0.0f));
-                glm::mat4 projection;
-                int width, height;
-                glfwGetWindowSize(window, &width, &height);
-                projection = glm::perspective(glm::radians((float)fov), (float) width / (float) height    , 0.1f, 100.0f);
+                model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f + angle),glm::vec3(0.0f, 0.0f, 1.0f));
+                model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f + angle * 2),glm::vec3(0.0f, 1.0f, 0.0f));
+                model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f + angle * 3),glm::vec3(1.0f, 0.0f, 0.0f));
 
                 shaderProgram.setMat4("projection", projection);
                 shaderProgram.setMat4("view", view);

@@ -3,7 +3,15 @@
 //
 
 #include "Object.h"
-#include "../objects/cube.h"
+#include "../settings/config.h"
+#include <utility>
 
 namespace world {
+    Object::Object(std::vector<float> vertices) {
+        shape = std::move(vertices);
+        // TODO: implement setting
+        vertexShaderPath = settings::rendering.vertexShaderDefaultPAth;
+        fragmentShaderPath = settings::rendering.fragmentShaderDefaultPAth;
+        texturePath = settings::rendering.textureDefaultPath;
+    }
 } // world
