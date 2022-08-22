@@ -7,8 +7,9 @@
 #include <utility>
 
 namespace world {
-    Object::Object(std::vector<float> vertices) {
-        shape = std::move(vertices);
+    Object::Object(std::vector<float> shape) {
+        vertices.shape = std::move(shape);
+        vertices.shapeId = "cube";
         // TODO: implement setting
         vertexShaderPath = settings::rendering.vertexShaderDefaultPAth;
         fragmentShaderPath = settings::rendering.fragmentShaderDefaultPAth;

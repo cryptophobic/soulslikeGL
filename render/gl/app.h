@@ -22,6 +22,7 @@ namespace render {
         static void set_textures();
         static void process_input();
         static void event_loop();
+        static void event_loop_deprecated();
     private:
         static void set_mouse_position_callback();
         static void set_scroll_callback();

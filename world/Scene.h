@@ -10,20 +10,20 @@
 
 namespace world {
 
-    struct worldObject{
+    struct WorldObject{
         glm::vec3 position;
-        float xAngle;
-        float yAngle;
-        float zAngle;
+        float xAngle = 0.0f;
+        float yAngle = 0.0f;
+        float zAngle = 0.0f;
         Object* object;
-        int objectId;
+        unsigned int objectId;
     };
 
 
     class Scene {
     public:
-        std::vector<worldObject*> objects;
-        void putNewObject(std::vector<float> *vertices, glm::vec3 position);
+        std::vector<WorldObject*> objects;
+        void putNewObject(const std::vector<float> *vertices, glm::vec3 position);
     private:
         unsigned int lastObjectId = 0;
     };

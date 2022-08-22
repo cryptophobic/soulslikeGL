@@ -10,10 +10,15 @@
 
 namespace world {
 
+    struct worldObjectVertices {
+        std::vector<float> shape;
+        std::string shapeId;
+    };
+
     class Object {
     public:
         Object(std::vector<float>);
-        std::vector<float> shape;
+        worldObjectVertices vertices;
         std::string vertexShaderPath;
         std::string fragmentShaderPath;
         std::string texturePath;

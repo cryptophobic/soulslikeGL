@@ -13,7 +13,8 @@
 #include "../../objects/cube.h"
 #include "../../settings/config.h"
 #include "../../utils/filesystem_helper.h"
-#include "../../objects/square.h"
+#include "../../settings/worldConfig.h"
+#include "SceneRenderer.h"
 #include <stdexcept>
 #include <array>
 
@@ -25,31 +26,13 @@ common::Shader shaderProgram;
 common::Texture textureContainer;
 common::Texture textureFace;
 
-glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
-glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
-
 float deltaTime = 0.0f; // Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
 
-double yaw = -90.0f, pitch = 0, fov = 45;
-
-glm::vec3 cubePositions[] = {
-        glm::vec3(0.0f, 0.0f, 0.0f),
-        glm::vec3(2.0f, 5.0f, -15.0f),
-        glm::vec3(-1.5f, -2.2f, -2.5f),
-        glm::vec3(-3.8f, -2.0f, -12.3f),
-        glm::vec3(2.4f, -0.4f, -3.5f),
-        glm::vec3(-1.7f, 3.0f, -7.5f),
-        glm::vec3(1.3f, -2.0f, -2.5f),
-        glm::vec3(1.5f, 2.0f, -2.5f),
-        glm::vec3(1.5f, 0.2f, -1.5f),
-        glm::vec3(-1.3f, 1.0f, -1.5f)
-};
-
-
-
 namespace render {
+
+    SceneRenderer sceneRenderer;
+
     void App::start(int argc, char *argv[]) {
 
         FileSystem::setApplicationPath(std::string(argv[0]));
@@ -60,15 +43,24 @@ namespace render {
         set_mouse_position_callback();
         set_scroll_callback();
         set_framebuffer_size_callback();
+
+        set_shaders();
+        set_textures();
+
         set_scene();
+
+        event_loop_deprecated();
+        terminate();
+
 
         //App::event_loop();
 
-        controller.run();
+//        controller.run();
     }
 
     void App::set_scene() {
-        controller.getCurrentScene();
+        auto scene = controller.getCurrentScene();
+        sceneRenderer.set(scene);
     }
 
     void App::set_shaders() {
@@ -85,18 +77,18 @@ namespace render {
             glfwSetWindowShouldClose(window, true);
         }
 
-        glm::vec3 movingDirection = cameraFront;
+        glm::vec3 movingDirection = controller.cameraFront;
         movingDirection[1] = 0.0f;
 
         const float cameraSpeed = 2.5f * deltaTime; // adjust accordingly
         if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-            cameraPos += cameraSpeed * movingDirection;
+            controller.cameraPos += cameraSpeed * movingDirection;
         if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-            cameraPos -= cameraSpeed * movingDirection;
+            controller.cameraPos -= cameraSpeed * movingDirection;
         if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-            cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+            controller.cameraPos -= glm::normalize(glm::cross(controller.cameraFront, controller.cameraUp)) * cameraSpeed;
         if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-            cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+            controller.cameraPos += glm::normalize(glm::cross(controller.cameraFront, controller.cameraUp)) * cameraSpeed;
 
         if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
@@ -106,10 +98,32 @@ namespace render {
 
     void App::event_loop() {
 
-//        std::vector<GLfloat> vertexData(
-//                objects::cube_vertices,
-//                objects::cube_vertices + sizeof objects::cube_vertices / sizeof objects::cube_vertices[0]
-//                );
+        while(!glfwWindowShouldClose(window)) {
+            auto currentFrame = (float) glfwGetTime();
+            deltaTime = currentFrame - lastFrame;
+            lastFrame = currentFrame;
+
+            // input
+            App::process_input();
+            glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+            glm::mat4 view;
+            view = glm::lookAt(controller.cameraPos, controller.cameraPos + controller.cameraFront, controller.cameraUp);
+            glm::mat4 projection;
+            int width, height;
+            glfwGetWindowSize(window, &width, &height);
+            projection = glm::perspective(glm::radians((float)controller.fov), (float) width / (float) height, 0.1f, 100.0f);
+
+            sceneRenderer.draw();
+
+            // check and call events and swap the buffers
+            glfwPollEvents();
+            glfwSwapBuffers(window);
+        }
+    }
+
+    void App::event_loop_deprecated() {
 
         glGenVertexArrays(1, &VAO);
         glGenBuffers(1, &VBO);
@@ -118,8 +132,6 @@ namespace render {
 
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
         glBufferData(GL_ARRAY_BUFFER, (GLsizeiptr) (objects::cube_vertices.size() * sizeof(GLfloat)), objects::cube_vertices.data(), GL_STATIC_DRAW);
-
-        //glBufferData(GL_ARRAY_BUFFER, sizeof(objects::cube_vertices), objects::cube_vertices, GL_STATIC_DRAW);
 
         // position attribute
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)nullptr);
@@ -150,17 +162,17 @@ namespace render {
             glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
             const float radius = 10.0f;
             glm::mat4 view;
-            view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+            view = glm::lookAt(controller.cameraPos, controller.cameraPos + controller.cameraFront, controller.cameraUp);
 
             glm::mat4 projection;
             int width, height;
             glfwGetWindowSize(window, &width, &height);
-            projection = glm::perspective(glm::radians((float)fov), (float) width / (float) height    , 0.1f, 100.0f);
+            projection = glm::perspective(glm::radians((float)controller.fov), (float) width / (float) height, 0.1f, 100.0f);
 
             for(unsigned int i = 0; i < 10; i++)
             {
                 glm::mat4 model = glm::mat4(1.0f);
-                model = glm::translate(model, cubePositions[i]);
+                model = glm::translate(model, settings::testWorld.objectPositions[i]);//cubePositions[i]);
                 float angle = 20.0f * i;
                 model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f + angle),glm::vec3(0.0f, 0.0f, 1.0f));
                 model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f + angle * 2),glm::vec3(0.0f, 1.0f, 0.0f));
@@ -185,7 +197,7 @@ namespace render {
     }
 
     void App::set_scroll_callback() {
-        glfwSetCursorPosCallback(window, [](GLFWwindow *window, double xOffset, double yOffset) {
+        glfwSetScrollCallback(window, [](GLFWwindow *window, double xOffset, double yOffset) {
             controller.scrollCallback(xOffset, yOffset);
         });
     }

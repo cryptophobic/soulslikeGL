@@ -7,6 +7,8 @@
 #include <array>
 #include "Controller.h"
 #include "../init.h"
+#include "../settings/worldConfig.h"
+#include "../objects/cube.h"
 
 using namespace render;
 
@@ -36,12 +38,12 @@ namespace engine {
         if(pitch > 89.0f) pitch = 89.0f;
         if(pitch < -89.0f) pitch = -89.0f;
 
-//        glm::vec3 direction;
-//        direction.x = (float) cos((glm::radians(yaw)) * cos(glm::radians(pitch)));
-//        direction.y = (float) sin(glm::radians(pitch));
-//        direction.z = (float) (sin(glm::radians(yaw)) * cos(glm::radians(pitch)));
-//
-//        cameraFront = glm::normalize(direction);
+        glm::vec3 direction;
+        direction.x = (float) cos((glm::radians(yaw)) * cos(glm::radians(pitch)));
+        direction.y = (float) sin(glm::radians(pitch));
+        direction.z = (float) (sin(glm::radians(yaw)) * cos(glm::radians(pitch)));
+
+        cameraFront = glm::normalize(direction);
     }
 
     void Controller::scrollCallback(double xOffset, double yOffset) {
@@ -55,16 +57,15 @@ namespace engine {
     }
 
     void Controller::run() {
-
-        App::set_shaders();
-        App::set_textures();
-
-        App::event_loop();
-
-        App::terminate();
     }
 
-    world::Scene Controller::getCurrentScene() {
-        return {};
+    world::Scene *Controller::getCurrentScene() {
+        if (scene == nullptr) {
+            scene = new world::Scene();
+            for (glm::vec3 objectPosition: settings::testWorld.objectPositions) {
+                scene->putNewObject(&objects::cube_vertices, objectPosition);
+            }
+        }
+        return scene;
     }
 } // engine
