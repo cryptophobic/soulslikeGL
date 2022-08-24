@@ -29,7 +29,7 @@ namespace render {
 
     void App::start(int argc, char *argv[]) {
 
-        FileSystem::setApplicationPath(std::string(argv[0]));
+        FileSystemHelper::setApplicationPath(std::string(argv[0]));
 
         glfw_create_window();
         glad_init();

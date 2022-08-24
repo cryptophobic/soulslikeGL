@@ -11,21 +11,15 @@
 
 namespace fs = std::filesystem;
 
-static std::string root;
-
-class FileSystem
+class FileSystemHelper
 {
 
 public:
-    static std::string getPath(const std::string& path) {
-        return root + std::string("/") + path;
-    }
+    static std::string getPath(const std::string& path);
+    static void setApplicationPath(std::string path);
 
-    static void setApplicationPath(std::string path) {
-        boost::replace_all(path,"./", "");
-        const fs::path fullApplicationPath = fs::absolute(fs::path(path));
-        root = fullApplicationPath.parent_path().parent_path();
-    }
+private:
+    static std::string root;
 };
 
 

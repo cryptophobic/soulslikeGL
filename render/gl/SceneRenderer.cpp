@@ -54,8 +54,8 @@ namespace render {
         if (!shaderPrograms.contains(pairId)) {
             auto shaderProgram = new common::Shader();
             shaderProgram->set(
-                    FileSystem::getPath(object->vertexShaderPath).c_str(),
-                    FileSystem::getPath(object->fragmentShaderPath).c_str());
+                    FileSystemHelper::getPath(object->vertexShaderPath).c_str(),
+                    FileSystemHelper::getPath(object->fragmentShaderPath).c_str());
             shaderPrograms[pairId] = shaderProgram;
         }
 
@@ -65,7 +65,7 @@ namespace render {
     std::string SceneRenderer::setTextures(world::Object *object) {
         if (!textures.contains(object->texturePath)) {
             auto texture = new common::Texture();
-            texture->set(FileSystem::getPath(object->texturePath).c_str());
+            texture->set(FileSystemHelper::getPath(object->texturePath).c_str());
             textures[object->texturePath] = texture;
         }
 
@@ -91,6 +91,7 @@ namespace render {
             //        glBindTexture(GL_TEXTURE_2D, textureFace.ID);
 
         }
+        return worldObject->objectId;
     }
 
     void SceneRenderer::renderRenderObject(unsigned int objectId) {
