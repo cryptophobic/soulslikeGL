@@ -5,6 +5,7 @@
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <GLFW/glfw3.h>
 
 #include "SceneRenderer.h"
 #include "../../utils/filesystem_helper.h"
@@ -105,10 +106,10 @@ namespace render {
 
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, renderObjects[objectId]->worldObject->position);//cubePositions[i]);
-//        float angle = 20.0f * i;
-//        model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f + angle),glm::vec3(0.0f, 0.0f, 1.0f));
-//        model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f + angle * 2),glm::vec3(0.0f, 1.0f, 0.0f));
-//        model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f + angle * 3),glm::vec3(1.0f, 0.0f, 0.0f));
+        float angle = 20.0f * objectId;
+        model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f + angle),glm::vec3(0.0f, 0.0f, 1.0f));
+        model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f + angle * 2),glm::vec3(0.0f, 1.0f, 0.0f));
+        model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f + angle * 3),glm::vec3(1.0f, 0.0f, 0.0f));
 
         shaderPrograms[shaderProgramId]->setMat4("projection", projectionMatrix);
         shaderPrograms[shaderProgramId]->setMat4("view", viewMatrix);
