@@ -13,6 +13,7 @@ namespace world {
         // TODO: implement setting
         vertexShaderPath = settings::rendering.vertexShaderDefaultPAth;
         fragmentShaderPath = settings::rendering.fragmentShaderDefaultPAth;
-        texturePath = settings::rendering.textureDefaultPath;
+        texturePath = settings::rendering.textureDefaultPaths[0];
+        //texturePaths.emplace_back(settings::rendering.textureDefaultPaths[1]);
     }
 } // world
