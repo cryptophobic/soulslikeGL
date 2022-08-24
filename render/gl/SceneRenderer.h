@@ -27,6 +27,7 @@ namespace render {
     public:
         void set(world::Scene *);
         void draw(glm::mat4 view, glm::mat4 projection);
+        void clearCache();
     private:
         world::Scene *scene;
         glm::mat4 viewMatrix;

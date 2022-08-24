@@ -23,6 +23,11 @@ namespace render {
         }
     }
 
+    // TODO: doubtful solution
+    void SceneRenderer::clearCache() {
+        renderObjects.erase(renderObjects.begin(), renderObjects.end());
+    }
+
     std::string SceneRenderer::setVertexBufferObject(const world::worldObjectVertices& vertices) {
         if (!vertexBufferObjects.contains(vertices.shapeId)) {
             unsigned int VBO, VAO;
