@@ -21,10 +21,10 @@ namespace world {
     void Scene::setCurrentObject(WorldObject *worldObject) {
         if (currentObject != nullptr) {
             currentObject->object->fragmentShaderPath = settings::rendering.fragmentShaderDefaultPAth;
-            currentObject->objectId = ++lastObjectId;
+            currentObject->object->dirty = true;
         }
         currentObject = worldObject;
         currentObject->object->fragmentShaderPath = settings::rendering.fragmentShaderSelectedPAth;
-        currentObject->objectId = ++lastObjectId;
+        currentObject->object->dirty = true;
     }
 } // world

@@ -33,6 +33,7 @@ namespace world {
         std::string vertexShaderPath;
         std::string fragmentShaderPath;
         std::string texturePath;
+        bool dirty = true;
 
     private:
         std::stack<unsigned int> actions;

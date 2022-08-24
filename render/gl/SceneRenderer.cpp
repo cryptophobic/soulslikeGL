@@ -78,7 +78,7 @@ namespace render {
     }
 
     unsigned int SceneRenderer::setRenderObject(world::WorldObject *worldObject) {
-        if (!renderObjects.contains(worldObject->objectId)) {
+        if (worldObject->object->dirty || !renderObjects.contains(worldObject->objectId)) {
             auto renderObject = new RenderObject();
             renderObject->vertexBufferObjectId = setVertexBufferObject(worldObject->object->vertices);
             renderObject->shaderProgramId = setShaders(worldObject->object);
@@ -94,7 +94,7 @@ namespace render {
             glBindTexture(GL_TEXTURE_2D, shaderPrograms[renderObject->shaderProgramId]->ID);
             //        glActiveTexture(GL_TEXTURE1);
             //        glBindTexture(GL_TEXTURE_2D, textureFace.ID);
-
+            worldObject->object->dirty = false;
         }
         return worldObject->objectId;
     }
