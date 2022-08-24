@@ -6,11 +6,8 @@
 
 #include <array>
 #include "Controller.h"
-#include "../init.h"
 #include "../settings/worldConfig.h"
 #include "../objects/cube.h"
-
-using namespace render;
 
 namespace engine {
 
@@ -56,9 +53,6 @@ namespace engine {
         return {0, 0, width, height};
     }
 
-    void Controller::run() {
-    }
-
     world::Scene *Controller::getCurrentScene() {
         if (scene == nullptr) {
             scene = new world::Scene();
@@ -67,5 +61,22 @@ namespace engine {
             }
         }
         return scene;
+    }
+
+    void Controller::selectNextObject() {
+        bool next = false;
+        for (auto worldObject: scene->objects) {
+            if (next) {
+                scene->setCurrentObject(worldObject);
+                next = false;
+                break;
+            }
+            if (worldObject == scene->currentObject) {
+                next = true;
+            }
+        }
+        if (next) {
+            scene->setCurrentObject(scene->objects[0]);
+        }
     }
 } // engine

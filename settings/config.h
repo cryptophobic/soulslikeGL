@@ -20,10 +20,12 @@ namespace settings {
     const struct {
         const char *vertexShaderDefaultPAth;
         const char *fragmentShaderDefaultPAth;
+        const char *fragmentShaderSelectedPAth;
         const char *textureDefaultPaths[2];
     } rendering {
         .vertexShaderDefaultPAth = "shaders/shader.vert",
         .fragmentShaderDefaultPAth = "shaders/shader.frag",
+        .fragmentShaderSelectedPAth = "shaders/shaderSelected.frag",
         .textureDefaultPaths = {"textures/container.jpg", "textures/awesomeface.png"}
     };
 }

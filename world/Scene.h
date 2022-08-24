@@ -23,7 +23,9 @@ namespace world {
     class Scene {
     public:
         std::vector<WorldObject*> objects;
+        WorldObject *currentObject;
         void putNewObject(const std::vector<float> *vertices, glm::vec3 position);
+        void setCurrentObject(WorldObject *);
     private:
         unsigned int lastObjectId = 0;
     };

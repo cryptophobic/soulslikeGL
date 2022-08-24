@@ -37,6 +37,7 @@ namespace render {
         set_mouse_position_callback();
         set_scroll_callback();
         set_framebuffer_size_callback();
+        set_key_callback();
 
         set_scene();
 
@@ -50,7 +51,7 @@ namespace render {
     }
 
     void App::process_input() {
-        if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+        if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
             glfwSetWindowShouldClose(window, true);
         }
 
@@ -58,6 +59,7 @@ namespace render {
         movingDirection[1] = 0.0f;
 
         const float cameraSpeed = 2.5f * deltaTime; // adjust accordingly
+
         if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
             controller.cameraPos += cameraSpeed * movingDirection;
         if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
@@ -97,6 +99,14 @@ namespace render {
             glfwPollEvents();
             glfwSwapBuffers(window);
         }
+    }
+
+    void App::set_key_callback() {
+        glfwSetKeyCallback(window, [] (GLFWwindow* window, int key, int scancode, int action, int mods) {
+            if (key == GLFW_KEY_TAB && action == GLFW_PRESS) {
+                controller.selectNextObject();
+            }
+        });
     }
 
     void App::set_mouse_position_callback() {
