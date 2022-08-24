@@ -40,6 +40,11 @@ namespace render {
         std::string setTextures(world::Object *);
         unsigned int setRenderObject(world::WorldObject *);
         void renderRenderObject(unsigned int objectId);
+        void bindVertexArray(const std::string&);
+        void useShaderProgram(const std::string&);
+        std::string currentShaderActive;
+        std::string currentVAOActive;
+
 
     };
 

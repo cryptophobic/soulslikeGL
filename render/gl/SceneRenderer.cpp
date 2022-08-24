@@ -43,7 +43,7 @@ namespace render {
             glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
             glEnableVertexAttribArray(1);
             vertexBufferObjects[vertices.shapeId][RENDER_VAO] = VAO;
-            vertexBufferObjects[vertices.shapeId][RENDER_VBO] = VAO;
+            vertexBufferObjects[vertices.shapeId][RENDER_VBO] = VBO;
         }
 
         return vertices.shapeId;
@@ -97,23 +97,41 @@ namespace render {
 
     void SceneRenderer::renderRenderObject(unsigned int objectId) {
 
-        std::string vertexBufferObjectId = renderObjects[objectId]->vertexBufferObjectId;
         std::string shaderProgramId = renderObjects[objectId]->shaderProgramId;
 
-        //TODO: don't need to bind it every time if it had been bound previous time.
-        glBindVertexArray(vertexBufferObjects[vertexBufferObjectId][RENDER_VAO]);
-        shaderPrograms[shaderProgramId]->use();
+        bindVertexArray(renderObjects[objectId]->vertexBufferObjectId);
+        useShaderProgram(shaderProgramId);
+
+        auto worldObject = renderObjects[objectId]->worldObject;
 
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, renderObjects[objectId]->worldObject->position);//cubePositions[i]);
-        float angle = 20.0f * objectId;
-        model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f + angle),glm::vec3(0.0f, 0.0f, 1.0f));
-        model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f + angle * 2),glm::vec3(0.0f, 1.0f, 0.0f));
-        model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f + angle * 3),glm::vec3(1.0f, 0.0f, 0.0f));
+        model = glm::translate(model, worldObject->position);//cubePositions[i]);
+        //float angle = 20.0f * objectId;
+        model = glm::rotate(model, glm::radians(worldObject->xAngle),glm::vec3(1.0f, 0.0f, 0.0f));
+        model = glm::rotate(model, glm::radians(worldObject->yAngle),glm::vec3(0.0f, 1.0f, 0.0f));
+        model = glm::rotate(model, glm::radians(worldObject->zAngle),glm::vec3(0.0f, 0.0f, 1.0f));
+//        model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f + angle),glm::vec3(0.0f, 0.0f, 1.0f));
+//        model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f + angle * 2),glm::vec3(0.0f, 1.0f, 0.0f));
+//        model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f + angle * 3),glm::vec3(1.0f, 0.0f, 0.0f));
 
         shaderPrograms[shaderProgramId]->setMat4("projection", projectionMatrix);
         shaderPrograms[shaderProgramId]->setMat4("view", viewMatrix);
         shaderPrograms[shaderProgramId]->setMat4("model", model);
         glDrawArrays(GL_TRIANGLES, 0, 36);
     }
+
+    void SceneRenderer::bindVertexArray(const std::string& vertexBufferObjectId) {
+        if (currentVAOActive != vertexBufferObjectId) {
+            glBindVertexArray(vertexBufferObjects[vertexBufferObjectId][RENDER_VAO]);
+            currentVAOActive = vertexBufferObjectId;
+        }
+    }
+
+    void SceneRenderer::useShaderProgram(const std::string& shaderProgramId) {
+        if (currentShaderActive != shaderProgramId) {
+            shaderPrograms[shaderProgramId]->use();
+            currentShaderActive = shaderProgramId;
+        }
+    }
+
 } // render

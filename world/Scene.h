@@ -14,7 +14,7 @@ namespace world {
         glm::vec3 position;
         float xAngle = 0.0f;
         float yAngle = 0.0f;
-        float zAngle = 0.0f;
+        float zAngle = 45.0f;
         Object* object;
         unsigned int objectId;
     };
