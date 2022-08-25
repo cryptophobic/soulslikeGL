@@ -79,4 +79,6 @@ namespace engine {
             scene->setCurrentObject(scene->objects[0]);
         }
     }
+
+
 } // engine

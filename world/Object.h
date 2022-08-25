@@ -7,13 +7,7 @@
 
 #include <vector>
 #include <string>
-#include <stack>
-
-#define OBJECT_MOVE_FORWARD 1
-#define OBJECT_MOVE_BACKWARD 2
-#define OBJECT_ROTATE_LEFT 4
-#define OBJECT_ROTATE_RIGHT 8
-
+#include <map>
 
 namespace world {
 
@@ -24,19 +18,15 @@ namespace world {
 
     class Object {
     public:
-        Object(std::vector<float>);
-        void moveForward();
-        void moveBackward();
-        void rotateLeft();
-        void rotateRight();
+        explicit Object(std::vector<float>);
         worldObjectVertices vertices;
         std::string vertexShaderPath;
         std::string fragmentShaderPath;
         std::string texturePath;
         bool dirty = true;
-
+        enum ActionList : unsigned int {moveForward, moveBackward, rotateLeft, rotateRight};
+        std::map<ActionList, unsigned int> actions;
     private:
-        std::stack<unsigned int> actions;
     };
 
 } // world

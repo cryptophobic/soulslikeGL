@@ -6,6 +6,7 @@
 #define SOULSLIKEGL_SCENE_H
 
 #include <glm/glm.hpp>
+#include <map>
 #include "Object.h"
 
 namespace world {
@@ -19,14 +20,17 @@ namespace world {
         unsigned int objectId;
     };
 
-
     class Scene {
     public:
+        Scene();
         std::vector<WorldObject*> objects;
-        WorldObject *currentObject;
+        WorldObject *currentObject{};
         void putNewObject(const std::vector<float> *vertices, glm::vec3 position);
         void setCurrentObject(WorldObject *);
+        enum ActionList : unsigned int {switchObject};
+
     private:
+        std::map<ActionList, unsigned int> actions;
         unsigned int lastObjectId = 0;
     };
 

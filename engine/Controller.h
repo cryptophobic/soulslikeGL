@@ -12,7 +12,6 @@ namespace engine {
 
     class Controller {
     public:
-        void run();
         void mousePositionCallback(double xPos, double yPos);
         void scrollCallback(double xOffset, double yOffset);
         void selectNextObject();
@@ -22,8 +21,6 @@ namespace engine {
         double lastX = 400, lastY = 300;
         double yaw = -90.0f, pitch = 0, fov = 45;
         bool firstMouse = true;
-        float deltaTime = 0.0f; // Time between current frame and last frame
-        float lastFrame = 0.0f; // Time of last frame
 
         glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
         glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);

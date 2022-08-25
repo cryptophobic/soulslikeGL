@@ -7,9 +7,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "app.h"
-#include "../../engine/Controller.h"
-#include "common/Texture.h"
-#include "common/Shader.h"
 #include "../../settings/config.h"
 #include "../../utils/filesystem_helper.h"
 #include "../../settings/worldConfig.h"
@@ -17,22 +14,21 @@
 #include <stdexcept>
 #include <array>
 
-engine::Controller controller;
-GLFWwindow *window = nullptr;
-
-float deltaTime = 0.0f; // Time between current frame and last frame
-float lastFrame = 0.0f; // Time of last frame
-
 namespace render {
 
-    SceneRenderer sceneRenderer;
+    float App::deltaTime = 0.0f; // Time between current frame and last frame
+    float App::lastFrame = 0.0f; // Time of last frame
+
+    engine::Controller App::controller;
+    GLFWwindow *App::window = nullptr;
+
+    SceneRenderer App::sceneRenderer;
 
     void App::start(int argc, char *argv[]) {
 
         FileSystemHelper::setApplicationPath(std::string(argv[0]));
 
         glfw_create_window();
-        glad_init();
 
         set_mouse_position_callback();
         set_scroll_callback();
@@ -130,13 +126,6 @@ namespace render {
         });
     }
 
-    void App::glad_init() {
-        if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
-            throw std::runtime_error("Failed to initialize GLAD");
-        }
-        glEnable(GL_DEPTH_TEST);
-    }
-
     void App::terminate() {
         glfwTerminate();
     }
@@ -160,5 +149,10 @@ namespace render {
         }
         glfwMakeContextCurrent(window);
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+        if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
+            throw std::runtime_error("Failed to initialize GLAD");
+        }
+        glEnable(GL_DEPTH_TEST);
     }
 }

@@ -4,8 +4,10 @@
 
 #include "Scene.h"
 #include "../settings/config.h"
+#include "../settings/worldConfig.h"
 
 namespace world {
+
     void Scene::putNewObject(const std::vector<float> *vertices, glm::vec3 position) {
         auto object = new Object(*vertices);
         auto worldObject = new WorldObject();
@@ -26,5 +28,9 @@ namespace world {
         currentObject = worldObject;
         currentObject->object->fragmentShaderPath = settings::rendering.fragmentShaderSelectedPAth;
         currentObject->object->dirty = true;
+    }
+
+    Scene::Scene() {
+       actions = settings::sceneInputSettings;
     }
 } // world

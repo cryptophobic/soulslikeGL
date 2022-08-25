@@ -9,6 +9,8 @@
 #include <GLFW/glfw3.h>
 #include "common/Texture.h"
 #include "common/Shader.h"
+#include "SceneRenderer.h"
+#include "../../engine/Controller.h"
 
 const int SCREEN_FPS = 60;
 const int SCREEN_TICK_PER_FRAME = 1000 / SCREEN_FPS;
@@ -27,7 +29,12 @@ namespace render {
         static void set_key_callback();
         static void glfw_create_window();
         static void set_scene();
-        static void glad_init();
+
+        static SceneRenderer sceneRenderer;
+        static engine::Controller controller;
+        static GLFWwindow *window;
+        static float lastFrame;
+        static float deltaTime;
     };
 }
 
