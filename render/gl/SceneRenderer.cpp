@@ -112,9 +112,9 @@ namespace render {
         model = glm::translate(model, worldObject->position);
         //float angle = 20.0f * objectId;
         model = glm::rotate(model, glm::radians(worldObject->xAngle),glm::vec3(1.0f, 0.0f, 0.0f));
-        model = glm::rotate(model, glm::radians(worldObject->yAngle),glm::vec3(0.0f, 1.0f, 0.0f));
+        model = glm::rotate(model, glm::radians(worldObject->yaw),glm::vec3(0.0f, 1.0f, 0.0f));
         model = glm::rotate(model, glm::radians(worldObject->zAngle),glm::vec3(0.0f, 0.0f, 1.0f));
-//        model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f + angle),glm::vec3(0.0f, 0.0f, 1.0f));
+//        model = glm::rotate(model, (float) worldObject->yaw,glm::vec3(0.0f, 1.0f, 0.0f));
 //        model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f + angle * 2),glm::vec3(0.0f, 1.0f, 0.0f));
 //        model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f + angle * 3),glm::vec3(1.0f, 0.0f, 0.0f));
 

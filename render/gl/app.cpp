@@ -70,8 +70,9 @@ namespace render {
 
         const float cameraSpeed = 2.5f * deltaTime; // adjust accordingly
 
-        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
             controller.cameraPos += cameraSpeed * movingDirection;
+        }
         if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
             controller.cameraPos -= cameraSpeed * movingDirection;
         if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)

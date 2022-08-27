@@ -5,6 +5,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include <array>
+#include <iostream>
 #include "Controller.h"
 #include "../settings/worldConfig.h"
 #include "../objects/cube.h"

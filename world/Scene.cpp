@@ -2,6 +2,7 @@
 // Created by dima on 15.08.22.
 //
 
+#include <iostream>
 #include "Scene.h"
 #include "../settings/config.h"
 #include "../settings/worldConfig.h"
@@ -95,21 +96,30 @@ namespace world {
             unsigned int objectMovingState = worldObject->object->getMovingState();
             if (objectMovingState != 0) {
                 if (objectMovingState & SOULSLIKEGL_MOVE_FORWARD) {
-                    double yaw = -90.0f, pitch = 0, fov = 45;
-
-                    glm::vec3 direction;
-                    direction.x = (float) cos((glm::radians(yaw)) * cos(glm::radians(pitch)));
-                    direction.y = (float) sin(glm::radians(pitch));
-                    direction.z = (float) (sin(glm::radians(yaw)) * cos(glm::radians(pitch)));
-
-                    glm::vec3 objectFront = glm::normalize(direction);
-
-
-                    glm::vec3 movingDirection = objectFront;
-                    movingDirection[1] = 0.0f;
+                    glm::vec3 movingDirection = worldObject->direction;
+                    //movingDirection[1] = 0.0f;
 
                     worldObject->position += objectSpeed * movingDirection;
+
                     worldObject->object->stopMoving(SOULSLIKEGL_MOVE_FORWARD);
+                }
+                if (objectMovingState & SOULSLIKEGL_MOVE_BACKWARD) {
+                    glm::vec3 movingDirection = worldObject->direction;
+                    //movingDirection[1] = 0.0f;
+
+                    worldObject->position -= objectSpeed * movingDirection;
+
+                    worldObject->object->stopMoving(SOULSLIKEGL_MOVE_BACKWARD);
+                }
+                if (objectMovingState & SOULSLIKEGL_ROTATE_RIGHT) {
+                    worldObject->rotateObject(-objectSpeed);
+
+                    worldObject->object->stopMoving(SOULSLIKEGL_ROTATE_RIGHT);
+                }
+                if (objectMovingState & SOULSLIKEGL_ROTATE_LEFT) {
+                    worldObject->rotateObject(objectSpeed);
+
+                    worldObject->object->stopMoving(SOULSLIKEGL_ROTATE_LEFT);
                 }
             }
         }
