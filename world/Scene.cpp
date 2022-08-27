@@ -96,29 +96,19 @@ namespace world {
             unsigned int objectMovingState = worldObject->object->getMovingState();
             if (objectMovingState != 0) {
                 if (objectMovingState & SOULSLIKEGL_MOVE_FORWARD) {
-                    glm::vec3 movingDirection = worldObject->direction;
-                    //movingDirection[1] = 0.0f;
-
-                    worldObject->position += objectSpeed * movingDirection;
-
+                    worldObject->moveObject(objectSpeed);
                     worldObject->object->stopMoving(SOULSLIKEGL_MOVE_FORWARD);
                 }
                 if (objectMovingState & SOULSLIKEGL_MOVE_BACKWARD) {
-                    glm::vec3 movingDirection = worldObject->direction;
-                    //movingDirection[1] = 0.0f;
-
-                    worldObject->position -= objectSpeed * movingDirection;
-
+                    worldObject->moveObject(-objectSpeed);
                     worldObject->object->stopMoving(SOULSLIKEGL_MOVE_BACKWARD);
                 }
                 if (objectMovingState & SOULSLIKEGL_ROTATE_RIGHT) {
-                    worldObject->rotateObject(-objectSpeed);
-
+                    worldObject->rotateObject(-objectSpeed * 60);
                     worldObject->object->stopMoving(SOULSLIKEGL_ROTATE_RIGHT);
                 }
                 if (objectMovingState & SOULSLIKEGL_ROTATE_LEFT) {
-                    worldObject->rotateObject(objectSpeed);
-
+                    worldObject->rotateObject(objectSpeed * 50);
                     worldObject->object->stopMoving(SOULSLIKEGL_ROTATE_LEFT);
                 }
             }

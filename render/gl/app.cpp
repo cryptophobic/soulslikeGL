@@ -66,7 +66,7 @@ namespace render {
         }
 
         glm::vec3 movingDirection = controller.cameraFront;
-        movingDirection[1] = 0.0f;
+        //movingDirection[1] = 0.0f;
 
         const float cameraSpeed = 2.5f * deltaTime; // adjust accordingly
 

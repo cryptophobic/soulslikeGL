@@ -14,6 +14,7 @@ namespace world {
     public:
         WorldObject();
         void rotateObject(float objectSpeed);
+        void moveObject(float objectSpeed);
         glm::vec3 position;
         float xAngle = 0.0f;
         float yaw = 0.0f;

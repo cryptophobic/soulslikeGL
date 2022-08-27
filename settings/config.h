@@ -10,7 +10,7 @@ namespace settings {
         const struct {
             int width;
             int height;
-        } resolution = { .width = 800, .height = 600};
+        } resolution = { .width = 1600, .height = 900};
     } screen;
 
     const struct {
