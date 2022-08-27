@@ -9,6 +9,11 @@
 #include <string>
 #include <map>
 
+#define SOULSLIKEGL_MOVE_FORWARD 1
+#define SOULSLIKEGL_MOVE_BACKWARD 2
+#define SOULSLIKEGL_ROTATE_LEFT 4
+#define SOULSLIKEGL_ROTATE_RIGHT 8
+
 namespace world {
 
     struct worldObjectVertices {
@@ -18,16 +23,32 @@ namespace world {
 
     class Object {
     public:
+        enum ActionList : unsigned int {moveForward, moveBackward, rotateLeft, rotateRight};
         explicit Object(std::vector<float>);
+        void onKeyDownAction(ActionList);
+        void onKeyPressedAction(ActionList);
+        void moveForwardMethod();
+        void moveBackwardMethod();
+        void rotateLeftMethod();
+        void rotateRightMethod();
+        unsigned int getMovingState() const;
+        void stopMoving(unsigned int moving);
         worldObjectVertices vertices;
         std::string vertexShaderPath;
         std::string fragmentShaderPath;
         std::string texturePath;
         bool dirty = true;
-        enum ActionList : unsigned int {moveForward, moveBackward, rotateLeft, rotateRight};
-        std::map<unsigned int, ActionList> getControlsMap();
-        std::map<unsigned int, ActionList> actions;
+        std::map<int, ActionList> controls;
     private:
+        unsigned int movingState = 0;
+        std::map<unsigned int, void (Object::*)()> onKeyDownActionMethods {
+        };
+        std::map<unsigned int, void (Object::*)()> onKeyPressedActionMethods {
+                {ActionList::moveForward, &Object::moveForwardMethod},
+                {ActionList::moveBackward, &Object::moveBackwardMethod},
+                {ActionList::rotateLeft, &Object::rotateLeftMethod},
+                {ActionList::rotateRight, &Object::rotateRightMethod},
+        };
     };
 
 } // world

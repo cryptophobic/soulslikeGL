@@ -9,19 +9,11 @@
 #include <map>
 #include <functional>
 #include "Object.h"
+#include "WorldObject.h"
 
 #define OBJECT_CONTROLS_OFFSET 128
 
 namespace world {
-
-    struct WorldObject{
-        glm::vec3 position;
-        float xAngle = 0.0f;
-        float yAngle = 0.0f;
-        float zAngle = 0.0f;
-        Object* object;
-        unsigned int objectId;
-    };
 
     class Scene {
     public:
@@ -30,15 +22,17 @@ namespace world {
         WorldObject *currentObject;
         void putNewObject(const std::vector<float> *vertices, glm::vec3 position);
         void setCurrentObject(WorldObject *);
-        void keyDownOnAction(unsigned int);
+        void onKeyDownAction(unsigned int);
+        void onKeyPressedAction(unsigned int);
         void switchObjectMethod();
-        std::map<unsigned int, unsigned int> controls;
+        void processState(float objectSpeed);
+        std::map<int /** keycode **/, unsigned int /** action **/> controls;
 
         enum ActionList : unsigned int {switchObject};
 
     private:
         void updateControlsMap();
-        std::map<unsigned int, ActionList> sceneControls;
+        std::map<int, ActionList> sceneControls;
         std::map<unsigned int, void (Scene::*)()> onKeyDownActionMethods {
                 {ActionList::switchObject, &Scene::switchObjectMethod}
         };

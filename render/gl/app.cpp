@@ -46,9 +46,23 @@ namespace render {
         sceneRenderer.set(scene);
     }
 
+    void App::set_key_callback() {
+        glfwSetKeyCallback(window, [] (GLFWwindow* window, int key, int scancode, int action, int mods) {
+            if (controller.getCurrentScene()->controls.contains(key) && action == GLFW_PRESS) {
+                controller.getCurrentScene()->onKeyDownAction(controller.getCurrentScene()->controls[key]);
+            }
+        });
+    }
+
     void App::process_input() {
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
             glfwSetWindowShouldClose(window, true);
+        }
+
+        for (auto const& [key, action] : controller.getCurrentScene()->controls) {
+            if (glfwGetKey(window, key) == GLFW_PRESS) {
+                controller.getCurrentScene()->onKeyPressedAction(controller.getCurrentScene()->controls[key]);
+            }
         }
 
         glm::vec3 movingDirection = controller.cameraFront;
@@ -78,7 +92,10 @@ namespace render {
             lastFrame = currentFrame;
 
             // input
-            App::process_input();
+            process_input();
+
+            const float speed = 2.5f * deltaTime; // adjust accordingly
+            controller.getCurrentScene()->processState(speed);
             glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -95,14 +112,6 @@ namespace render {
             glfwPollEvents();
             glfwSwapBuffers(window);
         }
-    }
-
-    void App::set_key_callback() {
-        glfwSetKeyCallback(window, [] (GLFWwindow* window, int key, int scancode, int action, int mods) {
-            if (controller.getCurrentScene()->controls.contains(key) && action == GLFW_PRESS) {
-                controller.getCurrentScene()->keyDownOnAction(controller.getCurrentScene()->controls[key]);
-            }
-        });
     }
 
     void App::set_mouse_position_callback() {

@@ -63,22 +63,4 @@ namespace engine {
         return scene;
     }
 
-    void Controller::selectNextObject() {
-        bool next = false;
-        for (auto worldObject: scene->objects) {
-            if (next) {
-                scene->setCurrentObject(worldObject);
-                next = false;
-                break;
-            }
-            if (worldObject == scene->currentObject) {
-                next = true;
-            }
-        }
-        if (next) {
-            scene->setCurrentObject(scene->objects[0]);
-        }
-    }
-
-
 } // engine

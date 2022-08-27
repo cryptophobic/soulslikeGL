@@ -29,11 +29,11 @@ namespace settings {
             }
     };
 
-    const std::map<unsigned int, world::Scene::ActionList> sceneInputSettings{
+    const std::map<int, world::Scene::ActionList> sceneInputSettings{
             {GLFW_KEY_TAB, world::Scene::ActionList::switchObject}
     };
 
-    const std::map<unsigned int, world::Object::ActionList> objectInputSettings{
+    const std::map<int, world::Object::ActionList> objectInputSettings{
             {GLFW_KEY_DOWN, world::Object::ActionList::moveBackward},
             {GLFW_KEY_UP, world::Object::ActionList::moveForward},
             {GLFW_KEY_LEFT, world::Object::ActionList::rotateLeft},

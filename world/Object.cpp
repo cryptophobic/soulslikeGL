@@ -15,11 +15,43 @@ namespace world {
         vertexShaderPath = settings::rendering.vertexShaderDefaultPAth;
         fragmentShaderPath = settings::rendering.fragmentShaderDefaultPAth;
         texturePath = settings::rendering.textureDefaultPaths[0];
-        actions = settings::objectInputSettings;
+        controls = settings::objectInputSettings;
         //texturePaths.emplace_back(settings::rendering.textureDefaultPaths[1]);
     }
 
-    std::map<unsigned int, Object::ActionList> Object::getControlsMap() {
-        return actions;
+    void Object::onKeyDownAction(ActionList action) {
+        if (onKeyDownActionMethods.contains(action)) {
+            ((*this).*(onKeyDownActionMethods[action]))();
+        }
+    }
+
+    void Object::onKeyPressedAction(ActionList action) {
+        if (onKeyPressedActionMethods.contains(action)) {
+            ((*this).*(onKeyPressedActionMethods[action]))();
+        }
+    }
+
+    void Object::moveForwardMethod() {
+        movingState |= SOULSLIKEGL_MOVE_FORWARD;
+    }
+
+    void Object::moveBackwardMethod() {
+        movingState |= SOULSLIKEGL_MOVE_BACKWARD;
+    }
+
+    void Object::rotateLeftMethod() {
+        movingState |= SOULSLIKEGL_ROTATE_LEFT;
+    }
+
+    void Object::rotateRightMethod() {
+        movingState |= SOULSLIKEGL_ROTATE_RIGHT;
+    }
+
+    unsigned int Object::getMovingState() const {
+        return movingState;
+    }
+
+    void Object::stopMoving(unsigned int moving) {
+        movingState ^= moving;
     }
 } // world

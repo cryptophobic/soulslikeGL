@@ -14,7 +14,6 @@ namespace engine {
     public:
         void mousePositionCallback(double xPos, double yPos);
         void scrollCallback(double xOffset, double yOffset);
-        void selectNextObject();
         std::array<int, 4> getViewportVector(int width, int height);
         world::Scene *getCurrentScene();
 
