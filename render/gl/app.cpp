@@ -99,9 +99,8 @@ namespace render {
 
     void App::set_key_callback() {
         glfwSetKeyCallback(window, [] (GLFWwindow* window, int key, int scancode, int action, int mods) {
-            if (key == GLFW_KEY_TAB && action == GLFW_PRESS) {
-                controller.selectNextObject();
-                //sceneRenderer.clearCache();
+            if (controller.getCurrentScene()->controls.contains(key) && action == GLFW_PRESS) {
+                controller.getCurrentScene()->keyDownOnAction(controller.getCurrentScene()->controls[key]);
             }
         });
     }

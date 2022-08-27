@@ -25,7 +25,8 @@ namespace world {
         std::string texturePath;
         bool dirty = true;
         enum ActionList : unsigned int {moveForward, moveBackward, rotateLeft, rotateRight};
-        std::map<ActionList, unsigned int> actions;
+        std::map<unsigned int, ActionList> getControlsMap();
+        std::map<unsigned int, ActionList> actions;
     private:
     };
 

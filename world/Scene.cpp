@@ -28,9 +28,50 @@ namespace world {
         currentObject = worldObject;
         currentObject->object->fragmentShaderPath = settings::rendering.fragmentShaderSelectedPAth;
         currentObject->object->dirty = true;
+        updateControlsMap();
     }
 
     Scene::Scene() {
-       actions = settings::sceneInputSettings;
+        sceneControls = settings::sceneInputSettings;
+        currentObject = nullptr;
+        updateControlsMap();
+    }
+
+    void Scene::updateControlsMap() {
+        if (currentObject != nullptr) {
+            for (auto const &[key, value]: currentObject->object->getControlsMap()) {
+                controls[key] = OBJECT_CONTROLS_OFFSET * currentObject->objectId + value;
+            }
+        }
+
+        for (auto const& [key, value] : sceneControls) {
+            controls[key] = value;
+        }
+    }
+
+    void Scene::keyDownOnAction(unsigned int action) {
+        if (onKeyDownActionMethods.contains(action)) {
+            ((*this).*(onKeyDownActionMethods[action]))();
+        }
+    }
+
+    void Scene::switchObjectMethod() {
+        if (objects.empty()) {
+            return;
+        }
+        bool next = false;
+        for (auto worldObject: objects) {
+            if (next) {
+                setCurrentObject(worldObject);
+                next = false;
+                break;
+            }
+            if (worldObject == currentObject) {
+                next = true;
+            }
+        }
+        if (next) {
+            setCurrentObject(objects[0]);
+        }
     }
 } // world

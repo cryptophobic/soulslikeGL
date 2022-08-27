@@ -7,7 +7,10 @@
 
 #include <glm/glm.hpp>
 #include <map>
+#include <functional>
 #include "Object.h"
+
+#define OBJECT_CONTROLS_OFFSET 128
 
 namespace world {
 
@@ -27,10 +30,19 @@ namespace world {
         WorldObject *currentObject;
         void putNewObject(const std::vector<float> *vertices, glm::vec3 position);
         void setCurrentObject(WorldObject *);
+        void keyDownOnAction(unsigned int);
+        void switchObjectMethod();
+        std::map<unsigned int, unsigned int> controls;
+
         enum ActionList : unsigned int {switchObject};
 
     private:
-        std::map<ActionList, unsigned int> actions;
+        void updateControlsMap();
+        std::map<unsigned int, ActionList> sceneControls;
+        std::map<unsigned int, void (Scene::*)()> onKeyDownActionMethods {
+                {ActionList::switchObject, &Scene::switchObjectMethod}
+        };
+        std::map<unsigned int, void (Scene::*)()> onKeyPressedActionMethods {};
         unsigned int lastObjectId = 0;
     };
 

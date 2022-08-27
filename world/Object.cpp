@@ -18,4 +18,8 @@ namespace world {
         actions = settings::objectInputSettings;
         //texturePaths.emplace_back(settings::rendering.textureDefaultPaths[1]);
     }
+
+    std::map<unsigned int, Object::ActionList> Object::getControlsMap() {
+        return actions;
+    }
 } // world
