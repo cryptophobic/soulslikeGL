@@ -17,7 +17,7 @@ namespace render {
 #define RENDER_VBO 1
 
     struct RenderObject {
-        world::WorldObject *worldObject;
+        world::Object *object;
         std::string vertexBufferObjectId;
         std::string shaderProgramId;
         std::string textureId;
@@ -27,7 +27,6 @@ namespace render {
     public:
         void set(world::Scene *);
         void draw(glm::mat4 view, glm::mat4 projection);
-        void clearCache();
     private:
         world::Scene *scene;
         glm::mat4 viewMatrix;
@@ -36,10 +35,10 @@ namespace render {
         std::map<std::string, unsigned int[2]> vertexBufferObjects;
         std::map<std::string, common::Shader *> shaderPrograms{};
         std::map<std::string, common::Texture *> textures{};
-        std::string setVertexBufferObject(const world::worldObjectVertices &vertices);
-        std::string setShaders(world::Object *);
-        std::string setTextures(world::Object *);
-        unsigned int setRenderObject(world::WorldObject *);
+        std::string setVertexBufferObject(const world::Vertices &vertices);
+        std::string setShaders(world::ObjectGeometry *);
+        std::string setTextures(world::ObjectGeometry *);
+        unsigned int setRenderObject(world::Object *);
         void renderRenderObject(unsigned int objectId);
         void bindVertexArray(const std::string&);
         void useShaderProgram(const std::string&);

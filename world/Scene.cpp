@@ -1,46 +1,47 @@
-//
-// Created by dima on 15.08.22.
-//
-
 #include <iostream>
 #include "Scene.h"
+#include "Camera.h"
 #include "../settings/config.h"
 #include "../settings/worldConfig.h"
 
 namespace world {
 
-    void Scene::putNewObject(const std::vector<float> *vertices, glm::vec3 position) {
-        auto object = new Object(*vertices);
-        auto worldObject = new WorldObject();
-        worldObject->object = object;
-        worldObject->position = position;
-        worldObject->objectId = ++lastObjectId;
-        objects.emplace_back(worldObject);
-        if (currentObject == nullptr) {
-            setCurrentObject(worldObject);
-        }
-    }
-
-    void Scene::setCurrentObject(WorldObject *worldObject) {
-        if (currentObject != nullptr) {
-            currentObject->object->fragmentShaderPath = settings::rendering.fragmentShaderDefaultPAth;
-            currentObject->object->dirty = true;
-        }
-        currentObject = worldObject;
-        currentObject->object->fragmentShaderPath = settings::rendering.fragmentShaderSelectedPAth;
-        currentObject->object->dirty = true;
-        updateControlsMap();
-    }
-
     Scene::Scene() {
         sceneControls = settings::sceneInputSettings;
         currentObject = nullptr;
+        camera = new Camera();
+        camera->pitch = settings::testWorld.cameraSettings.pitch;
+        camera->yaw = settings::testWorld.cameraSettings.yaw;
+        camera->fow = settings::testWorld.cameraSettings.fov;
+        camera->position = settings::testWorld.cameraSettings.position;
+        updateControlsMap();
+    }
+
+    void Scene::putNewObject(const std::vector<float> *vertices, glm::vec3 position) {
+        auto object = new Object();
+        object->objectGeometry = new ObjectGeometry(*vertices);
+        object->position = position;
+        object->objectId = ++lastObjectId;
+        objects.emplace_back(object);
+        if (currentObject == nullptr) {
+            setCurrentObject(object);
+        }
+    }
+
+    void Scene::setCurrentObject(Object *object) {
+        if (currentObject != nullptr) {
+            currentObject->objectGeometry->fragmentShaderPath = settings::rendering.fragmentShaderDefaultPAth;
+            currentObject->objectGeometry->dirty = true;
+        }
+        currentObject = object;
+        currentObject->objectGeometry->fragmentShaderPath = settings::rendering.fragmentShaderSelectedPAth;
+        currentObject->objectGeometry->dirty = true;
         updateControlsMap();
     }
 
     void Scene::updateControlsMap() {
         if (currentObject != nullptr) {
-            for (auto const &[key, action]: currentObject->object->controls) {
+            for (auto const &[key, action]: currentObject->controls) {
                 controls[key] = OBJECT_CONTROLS_OFFSET * currentObject->objectId + action;
             }
         }
@@ -55,13 +56,13 @@ namespace world {
             return;
         }
         bool next = false;
-        for (auto worldObject: objects) {
+        for (auto object: objects) {
             if (next) {
-                setCurrentObject(worldObject);
+                setCurrentObject(object);
                 next = false;
                 break;
             }
-            if (worldObject == currentObject) {
+            if (object == currentObject) {
                 next = true;
             }
         }
@@ -74,7 +75,11 @@ namespace world {
         if (onKeyDownActionMethods.contains(action)) {
             ((*this).*(onKeyDownActionMethods[action]))();
         } else {
-            // Object onkeydown invocation
+            unsigned int objectId = action / OBJECT_CONTROLS_OFFSET;
+            if (currentObject != nullptr && currentObject->objectId == objectId) {
+                action -= objectId * OBJECT_CONTROLS_OFFSET;
+                currentObject->onKeyDownAction((Object::ActionList) action);
+            }
         }
     }
 
@@ -85,32 +90,16 @@ namespace world {
             unsigned int objectId = action / OBJECT_CONTROLS_OFFSET;
             if (currentObject != nullptr && currentObject->objectId == objectId) {
                 action -= objectId * OBJECT_CONTROLS_OFFSET;
-                currentObject->object->onKeyPressedAction((Object::ActionList) action);
+                currentObject->onKeyPressedAction((Object::ActionList) action);
             }
-            // Object onkeydown invocation
         }
     }
 
     void Scene::processState(const float objectSpeed) {
-        for (auto worldObject: objects) {
-            unsigned int objectMovingState = worldObject->object->getMovingState();
+        for (auto object: objects) {
+            unsigned int objectMovingState = object->getMovingState();
             if (objectMovingState != 0) {
-                if (objectMovingState & SOULSLIKEGL_MOVE_FORWARD) {
-                    worldObject->moveObject(objectSpeed);
-                    worldObject->object->stopMoving(SOULSLIKEGL_MOVE_FORWARD);
-                }
-                if (objectMovingState & SOULSLIKEGL_MOVE_BACKWARD) {
-                    worldObject->moveObject(-objectSpeed);
-                    worldObject->object->stopMoving(SOULSLIKEGL_MOVE_BACKWARD);
-                }
-                if (objectMovingState & SOULSLIKEGL_ROTATE_RIGHT) {
-                    worldObject->rotateObject(-objectSpeed * 60);
-                    worldObject->object->stopMoving(SOULSLIKEGL_ROTATE_RIGHT);
-                }
-                if (objectMovingState & SOULSLIKEGL_ROTATE_LEFT) {
-                    worldObject->rotateObject(objectSpeed * 50);
-                    worldObject->object->stopMoving(SOULSLIKEGL_ROTATE_LEFT);
-                }
+                object->move(objectSpeed, objectSpeed * 50);
             }
         }
     }

@@ -1,22 +1,38 @@
 //
-// Created by dima on 15.08.22.
+// Created by dima on 27.08.22.
 //
 
 #include "Object.h"
-#include "../settings/config.h"
 #include "../settings/worldConfig.h"
-#include <utility>
 
 namespace world {
-    Object::Object(std::vector<float> shape) {
-        vertices.shape = std::move(shape);
-        vertices.shapeId = "cube";
-        // TODO: implement setting
-        vertexShaderPath = settings::rendering.vertexShaderDefaultPAth;
-        fragmentShaderPath = settings::rendering.fragmentShaderDefaultPAth;
-        texturePath = settings::rendering.textureDefaultPaths[0];
+    Object::Object() {
+        updateDirection();
         controls = settings::objectInputSettings;
-        //texturePaths.emplace_back(settings::rendering.textureDefaultPaths[1]);
+    }
+
+    void Object::rotateObject(float objectSpeed) {
+        yaw += objectSpeed;
+        updateDirection();
+    }
+
+    void Object::updateDirection() {
+        direction.x = (float) cos((glm::radians(-yaw)) * cos(glm::radians(pitch)));
+        direction.y = (float) sin(glm::radians(pitch));
+        direction.z = (float) (sin(glm::radians(-yaw)) * cos(glm::radians(pitch)));
+        direction = glm::normalize(direction);
+    }
+
+    void Object::moveObject(float objectSpeed) {
+        position -= objectSpeed * direction;
+    }
+
+    void Object::move(float moveSpeed, float rotateSpeed) {
+        if (getMovingState() & SOULSLIKEGL_MOVE_FORWARD) moveObject(moveSpeed);
+        if (getMovingState() & SOULSLIKEGL_MOVE_BACKWARD) moveObject(-moveSpeed);
+        if (getMovingState() & SOULSLIKEGL_ROTATE_RIGHT) rotateObject(-rotateSpeed);
+        if (getMovingState() & SOULSLIKEGL_ROTATE_LEFT) rotateObject(rotateSpeed);
+        stopMoving(getMovingState());
     }
 
     void Object::onKeyDownAction(ActionList action) {
@@ -44,6 +60,14 @@ namespace world {
     }
 
     void Object::rotateRightMethod() {
+        movingState |= SOULSLIKEGL_ROTATE_RIGHT;
+    }
+
+    void Object::strafeLeftMethod() {
+        movingState |= SOULSLIKEGL_ROTATE_LEFT;
+    }
+
+    void Object::strafeRightMethod() {
         movingState |= SOULSLIKEGL_ROTATE_RIGHT;
     }
 

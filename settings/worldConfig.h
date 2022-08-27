@@ -14,6 +14,12 @@
 namespace settings {
     const struct {
         const glm::vec3 objectPositions[10];
+        const struct {
+            float yaw = -90.0f;
+            float pitch = 0;
+            float fov = 45;
+            glm::vec3 position = glm::vec3(0.0f, 0.0f, 3.0f);
+        } cameraSettings;
     } testWorld {
             .objectPositions = {
                     glm::vec3(0.0f, 0.0f, 0.0f),
@@ -38,6 +44,13 @@ namespace settings {
             {GLFW_KEY_UP, world::Object::ActionList::moveForward},
             {GLFW_KEY_LEFT, world::Object::ActionList::rotateLeft},
             {GLFW_KEY_RIGHT, world::Object::ActionList::rotateRight},
+    };
+
+    const std::map<int, world::Object::ActionList> cameraInputSettings{
+            {GLFW_KEY_S, world::Object::ActionList::moveBackward},
+            {GLFW_KEY_W, world::Object::ActionList::moveForward},
+            {GLFW_KEY_A, world::Object::ActionList::strafeLeft},
+            {GLFW_KEY_D, world::Object::ActionList::strafeRight},
     };
 }
 

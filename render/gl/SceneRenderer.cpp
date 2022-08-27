@@ -1,7 +1,3 @@
-//
-// Created by dima on 15.08.22.
-//
-
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -17,18 +13,13 @@ namespace render {
     void SceneRenderer::draw(glm::mat4 view, glm::mat4 projection) {
         viewMatrix = view;
         projectionMatrix = projection;
-        for (auto worldObject : scene->objects) {
-            setRenderObject(worldObject);
-            renderRenderObject(worldObject->objectId);
+        for (auto object : scene->objects) {
+            setRenderObject(object);
+            renderRenderObject(object->objectId);
         }
     }
 
-    // TODO: doubtful solution
-    void SceneRenderer::clearCache() {
-        renderObjects.erase(renderObjects.begin(), renderObjects.end());
-    }
-
-    std::string SceneRenderer::setVertexBufferObject(const world::worldObjectVertices& vertices) {
+    std::string SceneRenderer::setVertexBufferObject(const world::Vertices& vertices) {
         if (!vertexBufferObjects.contains(vertices.shapeId)) {
             unsigned int VBO, VAO;
 
@@ -53,7 +44,7 @@ namespace render {
         return vertices.shapeId;
     }
 
-    std::string SceneRenderer::setShaders(world::Object *object) {
+    std::string SceneRenderer::setShaders(world::ObjectGeometry *object) {
         // TODO: use some pairId for 2 shaders
         std::string pairId = object->texturePath + object->fragmentShaderPath;
         if (!shaderPrograms.contains(pairId)) {
@@ -67,7 +58,7 @@ namespace render {
         return pairId;
     }
 
-    std::string SceneRenderer::setTextures(world::Object *object) {
+    std::string SceneRenderer::setTextures(world::ObjectGeometry *object) {
         if (!textures.contains(object->texturePath)) {
             auto texture = new common::Texture();
             texture->set(FileSystemHelper::getPath(object->texturePath).c_str());
@@ -77,14 +68,14 @@ namespace render {
         return object->texturePath;
     }
 
-    unsigned int SceneRenderer::setRenderObject(world::WorldObject *worldObject) {
-        if (worldObject->object->dirty || !renderObjects.contains(worldObject->objectId)) {
+    unsigned int SceneRenderer::setRenderObject(world::Object *object) {
+        if (object->objectGeometry->dirty || !renderObjects.contains(object->objectId)) {
             auto renderObject = new RenderObject();
-            renderObject->vertexBufferObjectId = setVertexBufferObject(worldObject->object->vertices);
-            renderObject->shaderProgramId = setShaders(worldObject->object);
-            renderObject->textureId = setTextures(worldObject->object);
-            renderObject->worldObject = worldObject;
-            renderObjects[worldObject->objectId] = renderObject;
+            renderObject->vertexBufferObjectId = setVertexBufferObject(object->objectGeometry->vertices);
+            renderObject->shaderProgramId = setShaders(object->objectGeometry);
+            renderObject->textureId = setTextures(object->objectGeometry);
+            renderObject->object = object;
+            renderObjects[object->objectId] = renderObject;
 
             shaderPrograms[renderObject->shaderProgramId]->use();
             shaderPrograms[renderObject->shaderProgramId]->setInt("texture1", 0);
@@ -94,9 +85,9 @@ namespace render {
             glBindTexture(GL_TEXTURE_2D, shaderPrograms[renderObject->shaderProgramId]->ID);
             //        glActiveTexture(GL_TEXTURE1);
             //        glBindTexture(GL_TEXTURE_2D, textureFace.ID);
-            worldObject->object->dirty = false;
+            object->objectGeometry->dirty = false;
         }
-        return worldObject->objectId;
+        return object->objectId;
     }
 
     void SceneRenderer::renderRenderObject(unsigned int objectId) {
@@ -106,17 +97,13 @@ namespace render {
         bindVertexArray(renderObjects[objectId]->vertexBufferObjectId);
         useShaderProgram(shaderProgramId);
 
-        auto worldObject = renderObjects[objectId]->worldObject;
+        auto object = renderObjects[objectId]->object;
 
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, worldObject->position);
-        //float angle = 20.0f * objectId;
-        model = glm::rotate(model, glm::radians(worldObject->xAngle),glm::vec3(1.0f, 0.0f, 0.0f));
-        model = glm::rotate(model, glm::radians(worldObject->yaw),glm::vec3(0.0f, 1.0f, 0.0f));
-        model = glm::rotate(model, glm::radians(worldObject->zAngle),glm::vec3(0.0f, 0.0f, 1.0f));
-//        model = glm::rotate(model, (float) worldObject->yaw,glm::vec3(0.0f, 1.0f, 0.0f));
-//        model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f + angle * 2),glm::vec3(0.0f, 1.0f, 0.0f));
-//        model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f + angle * 3),glm::vec3(1.0f, 0.0f, 0.0f));
+        model = glm::translate(model, object->position);
+        model = glm::rotate(model, glm::radians(object->pitch),glm::vec3(1.0f, 0.0f, 0.0f));
+        model = glm::rotate(model, glm::radians(object->yaw),glm::vec3(0.0f, 1.0f, 0.0f));
+        model = glm::rotate(model, glm::radians(object->fow),glm::vec3(0.0f, 0.0f, 1.0f));
 
         shaderPrograms[shaderProgramId]->setMat4("projection", projectionMatrix);
         shaderPrograms[shaderProgramId]->setMat4("view", viewMatrix);

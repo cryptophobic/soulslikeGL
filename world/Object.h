@@ -1,13 +1,12 @@
 //
-// Created by dima on 15.08.22.
+// Created by dima on 27.08.22.
 //
 
-#ifndef SOULSLIKEGL_WORLD_OBJECT_H
-#define SOULSLIKEGL_WORLD_OBJECT_H
+#ifndef SOULSLIKEGL_OBJECT_H
+#define SOULSLIKEGL_OBJECT_H
 
-#include <vector>
-#include <string>
-#include <map>
+#include <glm/glm.hpp>
+#include "ObjectGeometry.h"
 
 #define SOULSLIKEGL_MOVE_FORWARD 1
 #define SOULSLIKEGL_MOVE_BACKWARD 2
@@ -16,30 +15,41 @@
 
 namespace world {
 
-    struct worldObjectVertices {
-        std::vector<float> shape;
-        std::string shapeId;
-    };
-
     class Object {
     public:
-        enum ActionList : unsigned int {moveForward, moveBackward, rotateLeft, rotateRight};
-        explicit Object(std::vector<float>);
+        Object();
+        enum ActionList : unsigned int
+                {moveForward, moveBackward, rotateLeft, rotateRight, strafeLeft, strafeRight, freeRotate};
+
+        void rotateObject(float objectSpeed);
+        void moveObject(float objectSpeed);
+        void move(float moveSpeed, float rotateSpeed);
+
         void onKeyDownAction(ActionList);
         void onKeyPressedAction(ActionList);
         void moveForwardMethod();
         void moveBackwardMethod();
         void rotateLeftMethod();
         void rotateRightMethod();
-        unsigned int getMovingState() const;
+        void strafeLeftMethod();
+        void strafeRightMethod();
+
+        [[nodiscard]] unsigned int getMovingState() const;
         void stopMoving(unsigned int moving);
-        worldObjectVertices vertices;
-        std::string vertexShaderPath;
-        std::string fragmentShaderPath;
-        std::string texturePath;
-        bool dirty = true;
+
+
+        glm::vec3 position;
+        float pitch = 0.0f; // x axis
+        float yaw = 0.0f;// y axis
+        float fow = 0.0f; // z axis
+        ObjectGeometry* objectGeometry;
+        glm::vec3 direction;
+
+        bool display = true;
         std::map<int, ActionList> controls;
+        unsigned int objectId;
     private:
+        void updateDirection();
         unsigned int movingState = 0;
         std::map<unsigned int, void (Object::*)()> onKeyDownActionMethods {
         };
@@ -49,8 +59,9 @@ namespace world {
                 {ActionList::rotateLeft, &Object::rotateLeftMethod},
                 {ActionList::rotateRight, &Object::rotateRightMethod},
         };
+
     };
 
 } // world
 
-#endif //SOULSLIKEGL_WORLD_OBJECT_H
+#endif //SOULSLIKEGL_OBJECT_H

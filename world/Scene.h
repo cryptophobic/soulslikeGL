@@ -8,8 +8,9 @@
 #include <glm/glm.hpp>
 #include <map>
 #include <functional>
+#include "ObjectGeometry.h"
 #include "Object.h"
-#include "WorldObject.h"
+#include "Camera.h"
 
 #define OBJECT_CONTROLS_OFFSET 128
 
@@ -18,10 +19,11 @@ namespace world {
     class Scene {
     public:
         Scene();
-        std::vector<WorldObject*> objects;
-        WorldObject *currentObject;
+        std::vector<Object*> objects;
+        Camera *camera;
+        Object *currentObject;
         void putNewObject(const std::vector<float> *vertices, glm::vec3 position);
-        void setCurrentObject(WorldObject *);
+        void setCurrentObject(Object *);
         void onKeyDownAction(unsigned int);
         void onKeyPressedAction(unsigned int);
         void switchObjectMethod();
