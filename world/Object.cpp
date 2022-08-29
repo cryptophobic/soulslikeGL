@@ -58,6 +58,7 @@ namespace world {
     void Object::rotateLeftMethod() {
         movingState |= SOULSLIKEGL_ROTATE_LEFT;
     }
+
     void Object::rotateRightMethod() {
         movingState |= SOULSLIKEGL_ROTATE_RIGHT;
     }
