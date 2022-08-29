@@ -12,8 +12,10 @@ namespace world {
         camera = new Camera();
         camera->pitch = settings::testWorld.cameraSettings.pitch;
         camera->yaw = settings::testWorld.cameraSettings.yaw;
-        camera->fow = settings::testWorld.cameraSettings.fov;
+        camera->fov = settings::testWorld.cameraSettings.fov;
         camera->position = settings::testWorld.cameraSettings.position;
+        camera->objectId = ++lastObjectId;
+
         updateControlsMap();
     }
 
@@ -44,6 +46,10 @@ namespace world {
             for (auto const &[key, action]: currentObject->controls) {
                 controls[key] = OBJECT_CONTROLS_OFFSET * currentObject->objectId + action;
             }
+        }
+
+        for (auto const &[key, action]: camera->controls) {
+            controls[key] = OBJECT_CONTROLS_OFFSET * camera->objectId + action;
         }
 
         for (auto const& [key, action] : sceneControls) {
@@ -80,6 +86,10 @@ namespace world {
                 action -= objectId * OBJECT_CONTROLS_OFFSET;
                 currentObject->onKeyDownAction((Object::ActionList) action);
             }
+            if (camera != nullptr && camera->objectId == objectId) {
+                action -= objectId * OBJECT_CONTROLS_OFFSET;
+                camera->onKeyDownAction((Camera::ActionList) action);
+            }
         }
     }
 
@@ -92,6 +102,10 @@ namespace world {
                 action -= objectId * OBJECT_CONTROLS_OFFSET;
                 currentObject->onKeyPressedAction((Object::ActionList) action);
             }
+            if (camera != nullptr && camera->objectId == objectId) {
+                action -= objectId * OBJECT_CONTROLS_OFFSET;
+                camera->onKeyPressedAction((Camera::ActionList) action);
+            }
         }
     }
 
@@ -101,6 +115,9 @@ namespace world {
             if (objectMovingState != 0) {
                 object->move(objectSpeed, objectSpeed * 50);
             }
+        }
+        if (camera->getMovingState() != 0) {
+            camera->move(objectSpeed, objectSpeed * 50);
         }
     }
 } // world

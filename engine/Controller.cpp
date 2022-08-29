@@ -30,24 +30,19 @@ namespace engine {
         xOffset *= sensitivity;
         yOffset *= sensitivity;
 
-        yaw += xOffset;
-        pitch += yOffset;
+        scene->camera->yaw += (float)xOffset;
+        scene->camera->pitch += (float)yOffset;
 
-        if(pitch > 89.0f) pitch = 89.0f;
-        if(pitch < -89.0f) pitch = -89.0f;
+        if(scene->camera->pitch > 89.0f) scene->camera->pitch = 89.0f;
+        if(scene->camera->pitch < -89.0f) scene->camera->pitch = -89.0f;
 
-        glm::vec3 direction;
-        direction.x = (float) cos((glm::radians(yaw)) * cos(glm::radians(pitch)));
-        direction.y = (float) sin(glm::radians(pitch));
-        direction.z = (float) (sin(glm::radians(yaw)) * cos(glm::radians(pitch)));
-
-        cameraFront = glm::normalize(direction);
+        scene->camera->updateDirection();
     }
 
     void Controller::scrollCallback(double xOffset, double yOffset) {
-        fov -= (float) yOffset;
-        if (fov < 1.0f) fov = 1.0f;
-        if (fov > 45.0f) fov = 45.0f;
+        scene->camera->fov -= (float) yOffset;
+        if (scene->camera->fov < 1.0f) scene->camera->fov = 1.0f;
+        if (scene->camera->fov > 45.0f) scene->camera->fov = 45.0f;
     }
 
     std::array<int, 4> Controller::getViewportVector(int width, int height) {

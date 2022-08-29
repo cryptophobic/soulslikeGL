@@ -30,7 +30,7 @@ namespace world {
         void processState(float objectSpeed);
         std::map<int /** keycode **/, unsigned int /** action **/> controls;
 
-        enum ActionList : unsigned int {switchObject};
+        enum ActionList : unsigned int {switchObject = 1};
 
     private:
         void updateControlsMap();
@@ -39,7 +39,7 @@ namespace world {
                 {ActionList::switchObject, &Scene::switchObjectMethod}
         };
         std::map<unsigned int, void (Scene::*)()> onKeyPressedActionMethods {};
-        unsigned int lastObjectId = 0;
+        unsigned int lastObjectId = 1;
     };
 
 } // world

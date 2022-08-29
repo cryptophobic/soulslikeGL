@@ -8,14 +8,10 @@ namespace world {
     class Camera : public Object {
     public:
         Camera();
-    private:
-        std::map<unsigned int, void (Camera::*)()> onKeyPressedActionMethods {
-                {ActionList::moveForward, &Camera::moveForwardMethod},
-                {ActionList::moveBackward, &Camera::moveBackwardMethod},
-                {ActionList::strafeLeft, &Camera::strafeLeftMethod},
-                {ActionList::strafeRight, &Camera::strafeRightMethod},
-        };
+        void updateDirection() override;
 
+    protected:
+        const float sensitivity;
     };
 
 } // world

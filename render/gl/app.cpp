@@ -64,22 +64,6 @@ namespace render {
                 controller.getCurrentScene()->onKeyPressedAction(controller.getCurrentScene()->controls[key]);
             }
         }
-
-        glm::vec3 movingDirection = controller.cameraFront;
-        //movingDirection[1] = 0.0f;
-
-        const float cameraSpeed = 2.5f * deltaTime; // adjust accordingly
-
-        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-            controller.cameraPos += cameraSpeed * movingDirection;
-        }
-        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-            controller.cameraPos -= cameraSpeed * movingDirection;
-        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-            controller.cameraPos -= glm::normalize(glm::cross(controller.cameraFront, controller.cameraUp)) * cameraSpeed;
-        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-            controller.cameraPos += glm::normalize(glm::cross(controller.cameraFront, controller.cameraUp)) * cameraSpeed;
-
         if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
         if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS)
@@ -101,11 +85,12 @@ namespace render {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
             glm::mat4 view;
-            view = glm::lookAt(controller.cameraPos, controller.cameraPos + controller.cameraFront, controller.cameraUp);
+            auto camera = controller.getCurrentScene()->camera;
+            view = glm::lookAt(camera->position,camera->position + camera->frontVector,camera->upVector);
             glm::mat4 projection;
             int width, height;
             glfwGetWindowSize(window, &width, &height);
-            projection = glm::perspective(glm::radians((float)controller.fov), (float) width / (float) height, 0.1f, 100.0f);
+            projection = glm::perspective(glm::radians((float)camera->fov), (float) width / (float) height, 0.1f, 100.0f);
 
             sceneRenderer.draw(view, projection);
 
@@ -157,7 +142,7 @@ namespace render {
             throw std::runtime_error("Failed to create GLFW window");
         }
         glfwMakeContextCurrent(window);
-        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
         if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
             throw std::runtime_error("Failed to initialize GLAD");

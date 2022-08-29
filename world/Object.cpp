@@ -6,8 +6,13 @@
 #include "../settings/worldConfig.h"
 
 namespace world {
+    // TODO: Code smells
     Object::Object() {
-        updateDirection();
+        frontVector.x = (float) cos((glm::radians(-yaw)) * cos(glm::radians(pitch)));
+        frontVector.y = (float) sin(glm::radians(pitch));
+        frontVector.z = (float) (sin(glm::radians(-yaw)) * cos(glm::radians(pitch)));
+        frontVector = glm::normalize(frontVector);
+
         controls = settings::objectInputSettings;
     }
 
@@ -17,21 +22,28 @@ namespace world {
     }
 
     void Object::updateDirection() {
-        direction.x = (float) cos((glm::radians(-yaw)) * cos(glm::radians(pitch)));
-        direction.y = (float) sin(glm::radians(pitch));
-        direction.z = (float) (sin(glm::radians(-yaw)) * cos(glm::radians(pitch)));
-        direction = glm::normalize(direction);
+        frontVector.x = (float) cos((glm::radians(-yaw)) * cos(glm::radians(pitch)));
+        frontVector.y = (float) sin(glm::radians(pitch));
+        frontVector.z = (float) (sin(glm::radians(-yaw)) * cos(glm::radians(pitch)));
+        frontVector = glm::normalize(frontVector);
     }
 
     void Object::moveObject(float objectSpeed) {
-        position -= objectSpeed * direction;
+        position -= objectSpeed * frontVector;
+    }
+
+    void Object::strafeObject(float objectSpeed) {
+        position += glm::normalize(glm::cross(frontVector, upVector)) * objectSpeed;
+        updateDirection();
     }
 
     void Object::move(float moveSpeed, float rotateSpeed) {
-        if (getMovingState() & SOULSLIKEGL_MOVE_FORWARD) moveObject(moveSpeed);
-        if (getMovingState() & SOULSLIKEGL_MOVE_BACKWARD) moveObject(-moveSpeed);
+        if (getMovingState() & SOULSLIKEGL_MOVE_FORWARD) moveObject(-moveSpeed);
+        if (getMovingState() & SOULSLIKEGL_MOVE_BACKWARD) moveObject(moveSpeed);
         if (getMovingState() & SOULSLIKEGL_ROTATE_RIGHT) rotateObject(-rotateSpeed);
         if (getMovingState() & SOULSLIKEGL_ROTATE_LEFT) rotateObject(rotateSpeed);
+        if (getMovingState() & SOULSLIKEGL_STRAFE_RIGHT) strafeObject(moveSpeed);
+        if (getMovingState() & SOULSLIKEGL_STRAFE_LEFT) strafeObject(-moveSpeed);
         stopMoving(getMovingState());
     }
 
@@ -64,11 +76,11 @@ namespace world {
     }
 
     void Object::strafeLeftMethod() {
-        movingState |= SOULSLIKEGL_ROTATE_LEFT;
+        movingState |= SOULSLIKEGL_STRAFE_LEFT;
     }
 
     void Object::strafeRightMethod() {
-        movingState |= SOULSLIKEGL_ROTATE_RIGHT;
+        movingState |= SOULSLIKEGL_STRAFE_RIGHT;
     }
 
     unsigned int Object::getMovingState() const {

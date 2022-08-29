@@ -12,6 +12,8 @@
 #define SOULSLIKEGL_MOVE_BACKWARD 2
 #define SOULSLIKEGL_ROTATE_LEFT 4
 #define SOULSLIKEGL_ROTATE_RIGHT 8
+#define SOULSLIKEGL_STRAFE_LEFT 16
+#define SOULSLIKEGL_STRAFE_RIGHT 32
 
 namespace world {
 
@@ -19,7 +21,7 @@ namespace world {
     public:
         Object();
         enum ActionList : unsigned int
-                {moveForward, moveBackward, rotateLeft, rotateRight, strafeLeft, strafeRight, freeRotate};
+                {moveForward = 1, moveBackward = 2, rotateLeft = 3, rotateRight = 4, strafeLeft = 5, strafeRight = 6, freeRotate = 7};
 
         void rotateObject(float objectSpeed);
         void moveObject(float objectSpeed);
@@ -41,15 +43,16 @@ namespace world {
         glm::vec3 position;
         float pitch = 0.0f; // x axis
         float yaw = 0.0f;// y axis
-        float fow = 0.0f; // z axis
+        float fov = 0.0f; // z axis
+        virtual void updateDirection();
         ObjectGeometry* objectGeometry;
-        glm::vec3 direction;
+        glm::vec3 frontVector;
+        glm::vec3 upVector{0.0f, 1.0f, 0.0f};
 
         bool display = true;
         std::map<int, ActionList> controls;
         unsigned int objectId;
-    private:
-        void updateDirection();
+    protected:
         unsigned int movingState = 0;
         std::map<unsigned int, void (Object::*)()> onKeyDownActionMethods {
         };
@@ -60,6 +63,7 @@ namespace world {
                 {ActionList::rotateRight, &Object::rotateRightMethod},
         };
 
+        void strafeObject(float speed);
     };
 
 } // world

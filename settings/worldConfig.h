@@ -18,6 +18,7 @@ namespace settings {
             float yaw = -90.0f;
             float pitch = 0;
             float fov = 45;
+            float sensitivity = 0.1f;
             glm::vec3 position = glm::vec3(0.0f, 0.0f, 3.0f);
         } cameraSettings;
     } testWorld {
@@ -46,11 +47,11 @@ namespace settings {
             {GLFW_KEY_RIGHT, world::Object::ActionList::rotateRight},
     };
 
-    const std::map<int, world::Object::ActionList> cameraInputSettings{
-            {GLFW_KEY_S, world::Object::ActionList::moveBackward},
-            {GLFW_KEY_W, world::Object::ActionList::moveForward},
-            {GLFW_KEY_A, world::Object::ActionList::strafeLeft},
-            {GLFW_KEY_D, world::Object::ActionList::strafeRight},
+    const std::map<int, world::Camera::ActionList> cameraInputSettings{
+            {GLFW_KEY_S, world::Camera::ActionList::moveBackward},
+            {GLFW_KEY_W, world::Camera::ActionList::moveForward},
+            {GLFW_KEY_A, world::Camera::ActionList::strafeLeft},
+            {GLFW_KEY_D, world::Camera::ActionList::strafeRight},
     };
 }
 
