@@ -15,6 +15,7 @@ namespace world {
         camera->fov = settings::testWorld.cameraSettings.fov;
         camera->position = settings::testWorld.cameraSettings.position;
         camera->objectId = ++lastObjectId;
+        camera->updateDirection();
 
         updateControlsMap();
     }
@@ -23,6 +24,7 @@ namespace world {
         auto object = new Object();
         object->objectGeometry = new ObjectGeometry(*vertices);
         object->position = position;
+        object->updateDirection();
         object->objectId = ++lastObjectId;
         objects.emplace_back(object);
         if (currentObject == nullptr) {
@@ -65,6 +67,7 @@ namespace world {
         for (auto object: objects) {
             if (next) {
                 setCurrentObject(object);
+                camera->followTheObject(object);
                 next = false;
                 break;
             }
@@ -74,6 +77,7 @@ namespace world {
         }
         if (next) {
             setCurrentObject(objects[0]);
+            camera->followTheObject(objects[0]);
         }
     }
 
@@ -101,6 +105,11 @@ namespace world {
             if (currentObject != nullptr && currentObject->objectId == objectId) {
                 action -= objectId * OBJECT_CONTROLS_OFFSET;
                 currentObject->onKeyPressedAction((Object::ActionList) action);
+                if (camera != nullptr
+                    && camera->objectToFollow != nullptr
+                    && camera->objectToFollow->objectId == currentObject->objectId) {
+                    camera->follow();
+                }
             }
             if (camera != nullptr && camera->objectId == objectId) {
                 action -= objectId * OBJECT_CONTROLS_OFFSET;

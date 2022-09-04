@@ -8,7 +8,9 @@ namespace world {
     class Camera : public Object {
     public:
         Camera();
-        void updateDirection() override;
+        Object *objectToFollow;
+        void followTheObject(Object *);
+        void follow();
 
     protected:
         const float sensitivity;

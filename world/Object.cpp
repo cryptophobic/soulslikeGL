@@ -8,11 +8,6 @@
 namespace world {
     // TODO: Code smells
     Object::Object() {
-        frontVector.x = (float) cos((glm::radians(-yaw)) * cos(glm::radians(pitch)));
-        frontVector.y = (float) sin(glm::radians(pitch));
-        frontVector.z = (float) (sin(glm::radians(-yaw)) * cos(glm::radians(pitch)));
-        frontVector = glm::normalize(frontVector);
-
         controls = settings::objectInputSettings;
     }
 
@@ -22,7 +17,7 @@ namespace world {
     }
 
     void Object::updateDirection() {
-        frontVector.x = (float) cos((glm::radians(-yaw)) * cos(glm::radians(pitch)));
+        frontVector.x = (float) (cos(glm::radians(-yaw)) * cos(glm::radians(pitch)));
         frontVector.y = (float) sin(glm::radians(pitch));
         frontVector.z = (float) (sin(glm::radians(-yaw)) * cos(glm::radians(pitch)));
         frontVector = glm::normalize(frontVector);

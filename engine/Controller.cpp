@@ -27,7 +27,7 @@ namespace engine {
         lastY = yPos;
 
         const float sensitivity = 0.1f;
-        xOffset *= sensitivity;
+        xOffset *= -sensitivity;
         yOffset *= sensitivity;
 
         scene->camera->yaw += (float)xOffset;

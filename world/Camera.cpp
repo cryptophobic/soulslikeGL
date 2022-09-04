@@ -3,6 +3,8 @@
 //
 
 #include "Camera.h"
+
+#include <utility>
 #include "../settings/worldConfig.h"
 
 namespace world {
@@ -21,18 +23,22 @@ namespace world {
                 {ActionList::strafeLeft, &Camera::strafeLeftMethod},
                 {ActionList::strafeRight, &Camera::strafeRightMethod},
         };
-
-        frontVector.x = (float) cos((glm::radians(yaw)) * cos(glm::radians(pitch)));
-        frontVector.y = (float) sin(glm::radians(pitch));
-        frontVector.z = (float) (sin(glm::radians(yaw)) * cos(glm::radians(pitch)));
-        frontVector = glm::normalize(frontVector);
     }
 
-    void Camera::updateDirection() {
-        frontVector.x = (float) cos((glm::radians(yaw)) * cos(glm::radians(pitch)));
-        frontVector.y = (float) sin(glm::radians(pitch));
-        frontVector.z = (float) (sin(glm::radians(yaw)) * cos(glm::radians(pitch)));
-        frontVector = glm::normalize(frontVector);
+    void Camera::follow() {
+        frontVector = objectToFollow->frontVector;
+        position = objectToFollow->position;
+        moveObject(7.0f);
+
+        glm::vec3 rightVector = glm::normalize(glm::cross(frontVector, upVector));
+
+        position += glm::normalize(glm::cross(frontVector, rightVector)) * -2.0f;
+        pitch = -35.0f;
+    }
+
+    void Camera::followTheObject(Object *object) {
+        objectToFollow = object;
+        follow();
     }
 
 } // world
