@@ -9,6 +9,7 @@ namespace world {
     public:
         Camera();
         Object *objectToFollow;
+        float fov = 0.0f; // zoom
         void followTheObject(Object *);
         void follow();
 

@@ -41,6 +41,7 @@ namespace world {
         currentObject->objectGeometry->fragmentShaderPath = settings::rendering.fragmentShaderSelectedPAth;
         currentObject->objectGeometry->dirty = true;
         updateControlsMap();
+        camera->followTheObject(object);
     }
 
     void Scene::updateControlsMap() {
@@ -67,7 +68,6 @@ namespace world {
         for (auto object: objects) {
             if (next) {
                 setCurrentObject(object);
-                camera->followTheObject(object);
                 next = false;
                 break;
             }
@@ -77,7 +77,6 @@ namespace world {
         }
         if (next) {
             setCurrentObject(objects[0]);
-            camera->followTheObject(objects[0]);
         }
     }
 

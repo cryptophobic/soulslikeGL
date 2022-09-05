@@ -103,7 +103,7 @@ namespace render {
         model = glm::translate(model, object->position);
         model = glm::rotate(model, glm::radians(object->pitch),glm::vec3(1.0f, 0.0f, 0.0f));
         model = glm::rotate(model, glm::radians(object->yaw),glm::vec3(0.0f, 1.0f, 0.0f));
-        model = glm::rotate(model, glm::radians(object->fov),glm::vec3(0.0f, 0.0f, 1.0f));
+        model = glm::rotate(model, glm::radians(object->roll),glm::vec3(0.0f, 0.0f, 1.0f));
 
         shaderPrograms[shaderProgramId]->setMat4("projection", projectionMatrix);
         shaderPrograms[shaderProgramId]->setMat4("view", viewMatrix);

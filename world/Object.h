@@ -43,7 +43,7 @@ namespace world {
         glm::vec3 position;
         float pitch = 0.0f; // x axis
         float yaw = 0.0f;// y axis
-        float fov = 0.0f; // z axis
+        float roll = 0.0f;// reserved
         virtual void updateDirection();
         ObjectGeometry* objectGeometry;
         glm::vec3 frontVector;
