@@ -29,8 +29,6 @@ namespace world {
         pitch = -35.0f;
         position = objectToFollow->position;
         updateDirection();
-
-        //frontVector = objectToFollow->frontVector;
         moveObject(7.0f);
 
         glm::vec3 rightVector = glm::normalize(glm::cross(frontVector, upVector));
