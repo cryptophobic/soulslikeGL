@@ -17,6 +17,13 @@
 
 namespace world {
 
+    struct ObjectStateStruct {
+        float yaw;
+        float pitch;
+        float roll;
+        glm::vec3 position;
+    };
+
     class Object {
     public:
         Object();
@@ -26,7 +33,6 @@ namespace world {
         void rotateObject(float objectSpeed);
         void moveObject(float objectSpeed);
         void move(float moveSpeed, float rotateSpeed);
-
         void onKeyDownAction(ActionList);
         void onKeyPressedAction(ActionList);
         void moveForwardMethod();
@@ -38,13 +44,9 @@ namespace world {
 
         [[nodiscard]] unsigned int getMovingState() const;
         void stopMoving(unsigned int moving);
-
-
-        glm::vec3 position;
-        float pitch = 0.0f; // x axis
-        float yaw = 0.0f;// y axis
-        float roll = 0.0f;// reserved
         virtual void updateDirection();
+
+        ObjectStateStruct state;
         ObjectGeometry* objectGeometry;
         glm::vec3 frontVector;
         glm::vec3 upVector{0.0f, 1.0f, 0.0f};

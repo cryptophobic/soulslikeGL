@@ -10,17 +10,22 @@
 #include <glm/vec3.hpp>
 #include <map>
 #include "../world/Scene.h"
+#include "../world/Camera.h"
+#include "../world/Object.h"
 
 namespace settings {
     const struct {
+        world::CameraStateStruct cameraState {
+                {
+                    90.0f,
+                    0.0f,
+                    0.0f,
+                    glm::vec3 (0.0f, 0.0f, 3.0f)
+                },
+                45.0f,
+                0.1f
+        };
         const glm::vec3 objectPositions[10];
-        const struct objectSettingsStruct {
-            float yaw = 90.0f;
-            float pitch = 0;
-            float fov = 45;
-            float sensitivity = 0.1f;
-            glm::vec3 position = glm::vec3(0.0f, 0.0f, 3.0f);
-        } cameraSettings;
     } testWorld {
             .objectPositions = {
                     glm::vec3(0.0f, 0.0f, 0.0f),

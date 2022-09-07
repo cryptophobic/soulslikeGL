@@ -9,11 +9,7 @@ namespace world {
     Scene::Scene() {
         sceneControls = settings::sceneInputSettings;
         currentObject = nullptr;
-        camera = new Camera();
-        camera->pitch = settings::testWorld.cameraSettings.pitch;
-        camera->yaw = settings::testWorld.cameraSettings.yaw;
-        camera->fov = settings::testWorld.cameraSettings.fov;
-        camera->position = settings::testWorld.cameraSettings.position;
+        camera = new Camera(settings::testWorld.cameraState);
         camera->objectId = ++lastObjectId;
         camera->updateDirection();
 
@@ -23,7 +19,7 @@ namespace world {
     void Scene::putNewObject(const std::vector<float> *vertices, glm::vec3 position) {
         auto object = new Object();
         object->objectGeometry = new ObjectGeometry(*vertices);
-        object->position = position;
+        object->state.position = position;
         object->updateDirection();
         object->objectId = ++lastObjectId;
         objects.emplace_back(object);
@@ -41,7 +37,7 @@ namespace world {
         currentObject->objectGeometry->fragmentShaderPath = settings::rendering.fragmentShaderSelectedPAth;
         currentObject->objectGeometry->dirty = true;
         updateControlsMap();
-        camera->followTheObject(object);
+        camera->bindObjectToFollow(object);
     }
 
     void Scene::updateControlsMap() {

@@ -12,23 +12,23 @@ namespace world {
     }
 
     void Object::rotateObject(float objectSpeed) {
-        yaw += objectSpeed;
+        state.yaw += objectSpeed;
         updateDirection();
     }
 
     void Object::updateDirection() {
-        frontVector.x = (float) (cos(glm::radians(-yaw)) * cos(glm::radians(pitch)));
-        frontVector.y = (float) sin(glm::radians(pitch));
-        frontVector.z = (float) (sin(glm::radians(-yaw)) * cos(glm::radians(pitch)));
+        frontVector.x = (float) (cos(glm::radians(-state.yaw)) * cos(glm::radians(state.pitch)));
+        frontVector.y = (float) sin(glm::radians(state.pitch));
+        frontVector.z = (float) (sin(glm::radians(-state.yaw)) * cos(glm::radians(state.pitch)));
         frontVector = glm::normalize(frontVector);
     }
 
     void Object::moveObject(float objectSpeed) {
-        position -= objectSpeed * frontVector;
+        state.position -= objectSpeed * frontVector;
     }
 
     void Object::strafeObject(float objectSpeed) {
-        position += glm::normalize(glm::cross(frontVector, upVector)) * objectSpeed;
+        state.position += glm::normalize(glm::cross(frontVector, upVector)) * objectSpeed;
         updateDirection();
     }
 

@@ -8,12 +8,7 @@
 
 namespace world {
     // TODO: Code smells bad
-    Camera::Camera() : sensitivity(settings::testWorld.cameraSettings.sensitivity) {
-        auto cameraSettings = settings::testWorld.cameraSettings;
-        yaw = cameraSettings.yaw;
-        pitch = cameraSettings.pitch;
-        fov = cameraSettings.fov;
-        position = cameraSettings.position;
+    Camera::Camera(CameraStateStruct initialState) : state(initialState) {
         display = false;
         controls = settings::cameraInputSettings;
         onKeyPressedActionMethods = {
@@ -25,18 +20,19 @@ namespace world {
     }
 
     void Camera::follow() {
-        yaw = objectToFollow->yaw;
-        pitch = -35.0f;
-        position = objectToFollow->position;
+        state.yaw = objectToFollow->state.yaw;
+        state.pitch = -35.0f;
+        state.position = objectToFollow->state.position;
         updateDirection();
         moveObject(7.0f);
 
         glm::vec3 rightVector = glm::normalize(glm::cross(frontVector, upVector));
 
-        position += glm::normalize(glm::cross(frontVector, rightVector)) * -2.0f;
+        // TODO: what's going on there
+        state.position += glm::normalize(glm::cross(frontVector, rightVector)) * -2.0f;
     }
 
-    void Camera::followTheObject(Object *object) {
+    void Camera::bindObjectToFollow(Object *object) {
         objectToFollow = object;
         follow();
     }

@@ -30,19 +30,19 @@ namespace engine {
         xOffset *= -sensitivity;
         yOffset *= sensitivity;
 
-        scene->camera->yaw += (float)xOffset;
-        scene->camera->pitch += (float)yOffset;
+        scene->camera->state.yaw += (float)xOffset;
+        scene->camera->state.pitch += (float)yOffset;
 
-        if(scene->camera->pitch > 89.0f) scene->camera->pitch = 89.0f;
-        if(scene->camera->pitch < -89.0f) scene->camera->pitch = -89.0f;
+        if(scene->camera->state.pitch > 89.0f) scene->camera->state.pitch = 89.0f;
+        if(scene->camera->state.pitch < -89.0f) scene->camera->state.pitch = -89.0f;
 
         scene->camera->updateDirection();
     }
 
     void Controller::scrollCallback(double xOffset, double yOffset) {
-        scene->camera->fov -= (float) yOffset;
-        if (scene->camera->fov < 1.0f) scene->camera->fov = 1.0f;
-        if (scene->camera->fov > 45.0f) scene->camera->fov = 45.0f;
+        scene->camera->state.fov -= (float) yOffset;
+        if (scene->camera->state.fov < 1.0f) scene->camera->state.fov = 1.0f;
+        if (scene->camera->state.fov > 45.0f) scene->camera->state.fov = 45.0f;
     }
 
     std::array<int, 4> Controller::getViewportVector(int width, int height) {

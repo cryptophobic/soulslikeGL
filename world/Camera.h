@@ -5,16 +5,18 @@
 
 namespace world {
 
+    struct CameraStateStruct : ObjectStateStruct {
+        float fov;
+        float sensitivity;
+    };
+
     class Camera : public Object {
     public:
-        Camera();
-        Object *objectToFollow;
-        float fov = 0.0f; // zoom
-        void followTheObject(Object *);
+        explicit Camera(CameraStateStruct initialState);
+        Object *objectToFollow = nullptr;
+        CameraStateStruct state;
+        void bindObjectToFollow(Object *);
         void follow();
-
-    protected:
-        const float sensitivity;
     };
 
 } // world
