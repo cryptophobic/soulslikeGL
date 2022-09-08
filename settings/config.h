@@ -24,8 +24,10 @@ namespace settings {
         const char *textureDefaultPaths[2];
     } rendering {
         .vertexShaderDefaultPAth = "shaders/shader.vert",
-        .fragmentShaderDefaultPAth = "shaders/shader.frag",
-        .fragmentShaderSelectedPAth = "shaders/shaderSelected.frag",
+//        .fragmentShaderDefaultPAth = "shaders/shader.frag",
+//        .fragmentShaderSelectedPAth = "shaders/shaderSelected.frag",
+        .fragmentShaderDefaultPAth = "shaders/shaderSelected.frag",
+        .fragmentShaderSelectedPAth = "shaders/shader.frag",
         .textureDefaultPaths = {"textures/container.jpg", "textures/awesomeface.png"}
     };
 }

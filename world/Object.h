@@ -35,6 +35,8 @@ namespace world {
         void rotateObject(float objectSpeed);
         void moveObject(float objectSpeed);
         void move(float moveSpeed, float rotateSpeed);
+        void rotate();
+        virtual void executeActions(float moveSpeed, float rotateSpeed);
 
         void keyPressedAction(ActionList);
         void keyDownAction(ActionList);
@@ -44,7 +46,7 @@ namespace world {
         void rotateRightMethod();
         void strafeLeftMethod();
         void strafeRightMethod();
-        void freeRotateMethod(double, double);
+        void freeRotateMethod(double, double, double, double);
 
         [[nodiscard]] unsigned int getMovingState() const;
         void stopMoving(unsigned int moving);
@@ -64,8 +66,12 @@ namespace world {
         bool display = true;
         std::map<int, ActionList> controls;
         unsigned int objectId;
+        float sensitivity;
     protected:
         unsigned int movingState = 0;
+        double xOffset = 0;
+        double yOffset = 0;
+
         std::map<unsigned int, void (Object::*)()> onKeyDownActionMethods {
                 {ActionList::moveForward, &Object::moveForwardMethod},
                 {ActionList::moveBackward, &Object::moveBackwardMethod},
@@ -74,7 +80,7 @@ namespace world {
         };
         std::map<unsigned int, void (Object::*)()> onKeyPressedActionMethods {};
 
-        void (Object::*onMouseMoveMethod) (double, double) = &Object::freeRotateMethod;
+        void (Object::*onMouseMoveMethod) (double, double, double, double) = &Object::freeRotateMethod;
 
 //        std::map<unsigned int, void (Object::*)()> onMouseEventsMethods {
 //                {ActionList::freeRotate, &Object::freeRotateMethod},

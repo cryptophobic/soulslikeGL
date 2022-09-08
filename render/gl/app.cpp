@@ -102,7 +102,7 @@ namespace render {
 
     void App::set_mouse_position_callback() {
         glfwSetCursorPosCallback(window, [](GLFWwindow *window, double xPos, double yPos) {
-            controller.mousePositionCallback(xPos, yPos);
+            controller.mouseMoveAction(xPos, yPos);
         });
     }
 

@@ -6,8 +6,12 @@
 #include "../settings/worldConfig.h"
 
 namespace world {
-    // TODO: Code smells
-    Object::Object(unsigned int newObjectId, ObjectState initialState) : objectId(newObjectId), state(initialState), controls(settings::objectInputSettings) {
+    Object::Object(unsigned int newObjectId, ObjectState initialState) :
+        objectId(newObjectId),
+        state(initialState),
+        controls(settings::objectInputSettings),
+        sensitivity(settings::testWorld.mouseSensitivity)
+    {
         updateDirection();
     }
 
@@ -29,6 +33,26 @@ namespace world {
 
     void Object::strafeObject(float objectSpeed) {
         state.position += glm::normalize(glm::cross(frontVector, upVector)) * objectSpeed;
+        updateDirection();
+    }
+
+    void Object::executeActions(float moveSpeed, float rotateSpeed) {
+        if (getMovingState() != 0) {
+            move(moveSpeed, rotateSpeed);
+        }
+        if (xOffset != 0 || yOffset != 0) {
+            rotate();
+        }
+    }
+
+    void Object::rotate() {
+        state.yaw += (float)xOffset;
+        //state.pitch += (float)yOffset;
+
+        if(state.pitch > 89.0f) state.pitch = 89.0f;
+        if(state.pitch < -89.0f) state.pitch = -89.0f;
+
+        xOffset = yOffset = 0;
         updateDirection();
     }
 
@@ -78,7 +102,12 @@ namespace world {
         movingState |= SOULSLIKEGL_STRAFE_RIGHT;
     }
 
-    void Object::freeRotateMethod(double xPos, double yPos) {
+    void Object::freeRotateMethod(double xPos, double yPos, double lastX, double lastY) {
+        xOffset = xPos - lastX;
+        yOffset = lastY - yPos;
+
+        xOffset *= -sensitivity;
+        yOffset *= sensitivity;
     }
 
     unsigned int Object::getMovingState() const {

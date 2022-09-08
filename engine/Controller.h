@@ -12,7 +12,7 @@ namespace engine {
 
     class Controller {
     public:
-        void mousePositionCallback(double xPos, double yPos);
+        void mouseMoveAction(double xPos, double yPos);
         void scrollCallback(double xOffset, double yOffset);
         void keyPressedAction(unsigned int);
         void keyDownAction(unsigned int);
@@ -21,9 +21,6 @@ namespace engine {
 
         std::array<int, 4> getViewportVector(int width, int height);
         world::Scene *getCurrentScene();
-
-        double lastX = 400, lastY = 300;
-        bool firstMouse = true;
     private:
         world::Scene *scene = nullptr;
 

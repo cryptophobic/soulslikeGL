@@ -12,32 +12,6 @@
 
 namespace engine {
 
-    void engine::Controller::mousePositionCallback(double xPos, double yPos) {
-
-        if (firstMouse) {
-            lastX = xPos;
-            lastY = yPos;
-            firstMouse = false;
-        }
-
-        double xOffset = xPos - lastX;
-        double yOffset = lastY - yPos;
-
-        lastX = xPos;
-        lastY = yPos;
-
-        xOffset *= -getCurrentScene()->camera->sensitivity;
-        yOffset *= getCurrentScene()->camera->sensitivity;
-
-        getCurrentScene()->camera->state.yaw += (float)xOffset;
-        getCurrentScene()->camera->state.pitch += (float)yOffset;
-
-        if(getCurrentScene()->camera->state.pitch > 89.0f) getCurrentScene()->camera->state.pitch = 89.0f;
-        if(getCurrentScene()->camera->state.pitch < -89.0f) getCurrentScene()->camera->state.pitch = -89.0f;
-
-        scene->camera->updateDirection();
-    }
-
     std::map<int /** keycode **/, unsigned int /** action **/> Controller::getControls() {
         return getCurrentScene()->controls;
     }
@@ -48,6 +22,10 @@ namespace engine {
 
     void Controller::keyPressedAction(unsigned int action) {
         return getCurrentScene()->keyPressedAction(action);
+    }
+
+    void Controller::mouseMoveAction(double xPos, double yPos) {
+        return getCurrentScene()->mouseMoveAction(xPos, yPos);
     }
 
     void Controller::scrollCallback(double xOffset, double yOffset) {

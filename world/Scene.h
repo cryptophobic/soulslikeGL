@@ -26,6 +26,7 @@ namespace world {
         void setCurrentObject(Object *);
         void keyPressedAction(unsigned int);
         void keyDownAction(unsigned int);
+        void mouseMoveAction(double xPos, double yPos);
         void switchObjectMethod();
         void processState(float objectSpeed);
         std::map<int /** keycode **/, unsigned int /** action **/> controls;
@@ -34,6 +35,10 @@ namespace world {
 
     private:
         void updateControlsMap();
+        // TODO: sort this out
+        double lastX = 0, lastY = 0, lastXCandidate = 0, lastYCandidate = 0;
+        bool firstMouse = true;
+
         std::map<int, ActionList> sceneControls;
         std::map<unsigned int, void (Scene::*)()> onKeyDownActionMethods {
         };

@@ -100,11 +100,24 @@ namespace world {
 
     void Scene::processState(const float objectSpeed) {
         for (auto object: objects) {
-            unsigned int objectMovingState = object->getMovingState();
-            if (objectMovingState != 0) {
-                object->move(objectSpeed, objectSpeed * 50);
-                camera->follow();
-            }
+            object->executeActions(objectSpeed, objectSpeed * 50);
         }
+        // TODO: sort this out
+        lastX = lastXCandidate;
+        lastY = lastYCandidate;
+    }
+
+    void Scene::mouseMoveAction(double xPos, double yPos) {
+
+        if (firstMouse) {
+            lastX = xPos;
+            lastY = yPos;
+            firstMouse = false;
+        }
+
+        currentObject->freeRotateMethod(xPos, yPos, lastX, lastY);
+        // TODO: sort this out
+        lastXCandidate = xPos;
+        lastYCandidate = yPos;
     }
 } // world
