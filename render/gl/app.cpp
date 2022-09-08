@@ -48,8 +48,8 @@ namespace render {
 
     void App::set_key_callback() {
         glfwSetKeyCallback(window, [] (GLFWwindow* window, int key, int scancode, int action, int mods) {
-            if (controller.getCurrentScene()->controls.contains(key) && action == GLFW_PRESS) {
-                controller.getCurrentScene()->onKeyDownAction(controller.getCurrentScene()->controls[key]);
+            if (controller.getControls().contains(key) && action == GLFW_PRESS) {
+                controller.action(controller.getControls()[key]);
             }
         });
     }
@@ -59,9 +59,9 @@ namespace render {
             glfwSetWindowShouldClose(window, true);
         }
 
-        for (auto const& [key, action] : controller.getCurrentScene()->controls) {
+        for (auto const& [key, action] : controller.getControls()) {
             if (glfwGetKey(window, key) == GLFW_PRESS) {
-                controller.getCurrentScene()->onKeyPressedAction(controller.getCurrentScene()->controls[key]);
+                controller.action(controller.getControls()[key]);
             }
         }
         if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)

@@ -14,13 +14,17 @@ namespace engine {
     public:
         void mousePositionCallback(double xPos, double yPos);
         void scrollCallback(double xOffset, double yOffset);
+        void action(unsigned int);
+
+        std::map<int /** keycode **/, unsigned int /** action **/> getControls();
+
         std::array<int, 4> getViewportVector(int width, int height);
         world::Scene *getCurrentScene();
 
         double lastX = 400, lastY = 300;
         bool firstMouse = true;
     private:
-        world::Scene *scene;
+        world::Scene *scene = nullptr;
 
     };
 

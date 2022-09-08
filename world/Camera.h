@@ -9,9 +9,9 @@ namespace world {
     public:
         explicit Camera(unsigned int newObjectId, ObjectState initialState);
         Object *objectToFollow = nullptr;
-        void followTheObject(Object *);
+        void bindToTheObject(Object *object);
         void follow();
-        float fov = 0.0f; // zoom
+        float fov; // zoom
         float sensitivity;
 
     protected:

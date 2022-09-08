@@ -1,15 +1,15 @@
 #include <iostream>
 #include "Scene.h"
 #include "Camera.h"
-#include "../settings/config.h"
 #include "../settings/worldConfig.h"
+#include "../settings/config.h"
 
 namespace world {
 
     Scene::Scene() {
         sceneControls = settings::sceneInputSettings;
-        currentObject = nullptr;
         camera = new Camera(++lastObjectId, settings::testWorld.cameraInitialState);
+        objects.emplace_back(camera);
         updateControlsMap();
     }
 
@@ -31,7 +31,7 @@ namespace world {
         currentObject->objectGeometry->fragmentShaderPath = settings::rendering.fragmentShaderSelectedPAth;
         currentObject->objectGeometry->dirty = true;
         updateControlsMap();
-        camera->followTheObject(object);
+        camera->bindToTheObject(object);
     }
 
     void Scene::updateControlsMap() {
@@ -56,6 +56,7 @@ namespace world {
         }
         bool next = false;
         for (auto object: objects) {
+            if (object->objectId == camera->objectId) continue;
             if (next) {
                 setCurrentObject(object);
                 next = false;
@@ -66,43 +67,22 @@ namespace world {
             }
         }
         if (next) {
-            setCurrentObject(objects[0]);
+            setCurrentObject(objects[0]->objectId == camera->objectId ? objects[1] : objects[0]);
         }
     }
 
-    void Scene::onKeyDownAction(unsigned int action) {
-        if (onKeyDownActionMethods.contains(action)) {
-            ((*this).*(onKeyDownActionMethods[action]))();
+    void Scene::action(unsigned int action) {
+        if (onActionMethods.contains(action)) {
+            ((*this).*(onActionMethods[action]))();
         } else {
             unsigned int objectId = action / OBJECT_CONTROLS_OFFSET;
-            if (currentObject != nullptr && currentObject->objectId == objectId) {
-                action -= objectId * OBJECT_CONTROLS_OFFSET;
-                currentObject->onKeyDownAction((Object::ActionList) action);
-            }
-            if (camera != nullptr && camera->objectId == objectId) {
-                action -= objectId * OBJECT_CONTROLS_OFFSET;
-                camera->onKeyDownAction((Camera::ActionList) action);
-            }
-        }
-    }
+            Object *object =
+                    currentObject->objectId == objectId ? currentObject :
+                    camera->objectId == objectId ? camera : nullptr;
 
-    void Scene::onKeyPressedAction(unsigned int action) {
-        if (onKeyPressedActionMethods.contains(action)) {
-            ((*this).*(onKeyPressedActionMethods[action]))();
-        } else {
-            unsigned int objectId = action / OBJECT_CONTROLS_OFFSET;
-            if (currentObject != nullptr && currentObject->objectId == objectId) {
+            if (object != nullptr) {
                 action -= objectId * OBJECT_CONTROLS_OFFSET;
-                currentObject->onKeyPressedAction((Object::ActionList) action);
-                if (camera != nullptr
-                    && camera->objectToFollow != nullptr
-                    && camera->objectToFollow->objectId == currentObject->objectId) {
-                    camera->follow();
-                }
-            }
-            if (camera != nullptr && camera->objectId == objectId) {
-                action -= objectId * OBJECT_CONTROLS_OFFSET;
-                camera->onKeyPressedAction((Camera::ActionList) action);
+                object->action((Object::ActionList) action);
             }
         }
     }
@@ -112,10 +92,8 @@ namespace world {
             unsigned int objectMovingState = object->getMovingState();
             if (objectMovingState != 0) {
                 object->move(objectSpeed, objectSpeed * 50);
+                camera->follow();
             }
-        }
-        if (camera->getMovingState() != 0) {
-            camera->move(objectSpeed, objectSpeed * 50);
         }
     }
 } // world

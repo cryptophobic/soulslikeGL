@@ -42,15 +42,9 @@ namespace world {
         stopMoving(getMovingState());
     }
 
-    void Object::onKeyDownAction(ActionList action) {
-        if (onKeyDownActionMethods.contains(action)) {
-            ((*this).*(onKeyDownActionMethods[action]))();
-        }
-    }
-
-    void Object::onKeyPressedAction(ActionList action) {
-        if (onKeyPressedActionMethods.contains(action)) {
-            ((*this).*(onKeyPressedActionMethods[action]))();
+    void Object::action(ActionList action) {
+        if (onActionMethods.contains(action)) {
+            ((*this).*(onActionMethods[action]))();
         }
     }
 
@@ -76,6 +70,9 @@ namespace world {
 
     void Object::strafeRightMethod() {
         movingState |= SOULSLIKEGL_STRAFE_RIGHT;
+    }
+
+    void Object::freeRotateMethod(double xPos, double yPos) {
     }
 
     unsigned int Object::getMovingState() const {

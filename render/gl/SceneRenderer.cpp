@@ -14,6 +14,7 @@ namespace render {
         viewMatrix = view;
         projectionMatrix = projection;
         for (auto object : scene->objects) {
+            if (!object->display) continue;
             setRenderObject(object);
             renderRenderObject(object->objectId);
         }

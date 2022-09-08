@@ -7,7 +7,7 @@
 #include "../settings/worldConfig.h"
 
 namespace world {
-    // TODO: Code smells bad
+
     Camera::Camera(unsigned int newObjectId, ObjectState initialState) :
         Object(newObjectId, initialState),
         fov(settings::testWorld.cameraFow),
@@ -15,7 +15,7 @@ namespace world {
     {
         display = false;
         controls = settings::cameraInputSettings;
-        onKeyPressedActionMethods = {
+        onActionMethods = {
                 {ActionList::moveForward, &Camera::moveForwardMethod},
                 {ActionList::moveBackward, &Camera::moveBackwardMethod},
                 {ActionList::strafeLeft, &Camera::strafeLeftMethod},
@@ -25,6 +25,7 @@ namespace world {
     }
 
     void Camera::follow() {
+        if (objectToFollow == nullptr) return;
         state.yaw = objectToFollow->state.yaw;
         state.pitch = -35.0f;
         state.position = objectToFollow->state.position;
@@ -34,7 +35,7 @@ namespace world {
         moveObject(7.0f);
     }
 
-    void Camera::followTheObject(Object *object) {
+    void Camera::bindToTheObject(Object *object) {
         objectToFollow = object;
         follow();
     }

@@ -28,20 +28,22 @@ namespace world {
     public:
         explicit Object(unsigned int newObjectId, ObjectState initialState);
         enum ActionList : unsigned int
-                {moveForward = 1, moveBackward = 2, rotateLeft = 3, rotateRight = 4, strafeLeft = 5, strafeRight = 6, freeRotate = 7};
+                {
+            moveForward = 1, moveBackward = 2, rotateLeft = 3, rotateRight = 4, strafeLeft = 5, strafeRight = 6,
+            freeRotate = 7, zoom = 8};
 
         void rotateObject(float objectSpeed);
         void moveObject(float objectSpeed);
         void move(float moveSpeed, float rotateSpeed);
 
-        void onKeyDownAction(ActionList);
-        void onKeyPressedAction(ActionList);
+        void action(ActionList);
         void moveForwardMethod();
         void moveBackwardMethod();
         void rotateLeftMethod();
         void rotateRightMethod();
         void strafeLeftMethod();
         void strafeRightMethod();
+        void freeRotateMethod(double, double);
 
         [[nodiscard]] unsigned int getMovingState() const;
         void stopMoving(unsigned int moving);
@@ -63,14 +65,20 @@ namespace world {
         unsigned int objectId;
     protected:
         unsigned int movingState = 0;
-        std::map<unsigned int, void (Object::*)()> onKeyDownActionMethods {
-        };
-        std::map<unsigned int, void (Object::*)()> onKeyPressedActionMethods {
+        std::map<unsigned int, void (Object::*)()> onActionMethods {
                 {ActionList::moveForward, &Object::moveForwardMethod},
                 {ActionList::moveBackward, &Object::moveBackwardMethod},
                 {ActionList::rotateLeft, &Object::rotateLeftMethod},
                 {ActionList::rotateRight, &Object::rotateRightMethod},
         };
+
+        void (Object::*onMouseMoveMethod) (double, double) = &Object::freeRotateMethod;
+
+//        std::map<unsigned int, void (Object::*)()> onMouseEventsMethods {
+//                {ActionList::freeRotate, &Object::freeRotateMethod},
+//                {ActionList::zoom, &Object::zoomMethod},
+//        };
+
 
         void strafeObject(float speed);
     };

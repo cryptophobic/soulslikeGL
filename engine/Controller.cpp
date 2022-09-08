@@ -26,21 +26,28 @@ namespace engine {
         lastX = xPos;
         lastY = yPos;
 
-        const float sensitivity = 0.1f;
-        xOffset *= -sensitivity;
-        yOffset *= sensitivity;
+        xOffset *= -getCurrentScene()->camera->sensitivity;
+        yOffset *= getCurrentScene()->camera->sensitivity;
 
-        scene->camera->state.yaw += (float)xOffset;
-        scene->camera->state.pitch += (float)yOffset;
+        getCurrentScene()->camera->state.yaw += (float)xOffset;
+        getCurrentScene()->camera->state.pitch += (float)yOffset;
 
-        if(scene->camera->state.pitch > 89.0f) scene->camera->state.pitch = 89.0f;
-        if(scene->camera->state.pitch < -89.0f) scene->camera->state.pitch = -89.0f;
+        if(getCurrentScene()->camera->state.pitch > 89.0f) getCurrentScene()->camera->state.pitch = 89.0f;
+        if(getCurrentScene()->camera->state.pitch < -89.0f) getCurrentScene()->camera->state.pitch = -89.0f;
 
         scene->camera->updateDirection();
     }
 
+    std::map<int /** keycode **/, unsigned int /** action **/> Controller::getControls() {
+        return getCurrentScene()->controls;
+    }
+
+    void Controller::action(unsigned int action) {
+        getCurrentScene()->action(action);
+    }
+
     void Controller::scrollCallback(double xOffset, double yOffset) {
-        scene->camera->fov -= (float) yOffset;
+        getCurrentScene()->camera->fov -= (float) yOffset;
         if (scene->camera->fov < 1.0f) scene->camera->fov = 1.0f;
         if (scene->camera->fov > 45.0f) scene->camera->fov = 45.0f;
     }
