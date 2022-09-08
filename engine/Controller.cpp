@@ -42,8 +42,12 @@ namespace engine {
         return getCurrentScene()->controls;
     }
 
-    void Controller::action(unsigned int action) {
-        getCurrentScene()->action(action);
+    void Controller::keyDownAction(unsigned int action) {
+        return getCurrentScene()->keyDownAction(action);
+    }
+
+    void Controller::keyPressedAction(unsigned int action) {
+        return getCurrentScene()->keyPressedAction(action);
     }
 
     void Controller::scrollCallback(double xOffset, double yOffset) {

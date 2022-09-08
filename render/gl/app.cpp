@@ -49,25 +49,26 @@ namespace render {
     void App::set_key_callback() {
         glfwSetKeyCallback(window, [] (GLFWwindow* window, int key, int scancode, int action, int mods) {
             if (controller.getControls().contains(key) && action == GLFW_PRESS) {
-                controller.action(controller.getControls()[key]);
+                controller.keyPressedAction(controller.getControls()[key]);
             }
         });
     }
 
     void App::process_input() {
+        for (auto const& [key, action] : controller.getControls()) {
+            if (glfwGetKey(window, key) == GLFW_PRESS) {
+                controller.keyDownAction(controller.getControls()[key]);
+            }
+        }
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
             glfwSetWindowShouldClose(window, true);
         }
-
-        for (auto const& [key, action] : controller.getControls()) {
-            if (glfwGetKey(window, key) == GLFW_PRESS) {
-                controller.action(controller.getControls()[key]);
-            }
-        }
-        if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
+        if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-        if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS)
+        }
+        if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS) {
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        }
     }
 
     void App::event_loop() {

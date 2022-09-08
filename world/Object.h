@@ -36,7 +36,8 @@ namespace world {
         void moveObject(float objectSpeed);
         void move(float moveSpeed, float rotateSpeed);
 
-        void action(ActionList);
+        void keyPressedAction(ActionList);
+        void keyDownAction(ActionList);
         void moveForwardMethod();
         void moveBackwardMethod();
         void rotateLeftMethod();
@@ -65,12 +66,13 @@ namespace world {
         unsigned int objectId;
     protected:
         unsigned int movingState = 0;
-        std::map<unsigned int, void (Object::*)()> onActionMethods {
+        std::map<unsigned int, void (Object::*)()> onKeyDownActionMethods {
                 {ActionList::moveForward, &Object::moveForwardMethod},
                 {ActionList::moveBackward, &Object::moveBackwardMethod},
                 {ActionList::rotateLeft, &Object::rotateLeftMethod},
                 {ActionList::rotateRight, &Object::rotateRightMethod},
         };
+        std::map<unsigned int, void (Object::*)()> onKeyPressedActionMethods {};
 
         void (Object::*onMouseMoveMethod) (double, double) = &Object::freeRotateMethod;
 

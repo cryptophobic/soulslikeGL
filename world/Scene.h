@@ -24,8 +24,8 @@ namespace world {
         Object *currentObject = nullptr;
         void putNewObject(const std::vector<float> *vertices, glm::vec3 position);
         void setCurrentObject(Object *);
-        void action(unsigned int);
-        void onKeyPressedAction(unsigned int);
+        void keyPressedAction(unsigned int);
+        void keyDownAction(unsigned int);
         void switchObjectMethod();
         void processState(float objectSpeed);
         std::map<int /** keycode **/, unsigned int /** action **/> controls;
@@ -35,7 +35,10 @@ namespace world {
     private:
         void updateControlsMap();
         std::map<int, ActionList> sceneControls;
-        std::map<unsigned int, void (Scene::*)()> onActionMethods {
+        std::map<unsigned int, void (Scene::*)()> onKeyDownActionMethods {
+        };
+
+        std::map<unsigned int, void (Scene::*)()> onKeyPressedActionMethods {
                 {ActionList::switchObject, &Scene::switchObjectMethod}
         };
         unsigned int lastObjectId = 1;

@@ -42,9 +42,15 @@ namespace world {
         stopMoving(getMovingState());
     }
 
-    void Object::action(ActionList action) {
-        if (onActionMethods.contains(action)) {
-            ((*this).*(onActionMethods[action]))();
+    void Object::keyPressedAction(ActionList action) {
+        if (onKeyPressedActionMethods.contains(action)) {
+            return ((*this).*(onKeyPressedActionMethods[action]))();
+        }
+    }
+
+    void Object::keyDownAction(ActionList action) {
+        if (onKeyDownActionMethods.contains(action)) {
+            ((*this).*(onKeyDownActionMethods[action]))();
         }
     }
 

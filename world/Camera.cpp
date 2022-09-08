@@ -15,7 +15,7 @@ namespace world {
     {
         display = false;
         controls = settings::cameraInputSettings;
-        onActionMethods = {
+        onKeyDownActionMethods = {
                 {ActionList::moveForward, &Camera::moveForwardMethod},
                 {ActionList::moveBackward, &Camera::moveBackwardMethod},
                 {ActionList::strafeLeft, &Camera::strafeLeftMethod},

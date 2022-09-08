@@ -14,7 +14,8 @@ namespace engine {
     public:
         void mousePositionCallback(double xPos, double yPos);
         void scrollCallback(double xOffset, double yOffset);
-        void action(unsigned int);
+        void keyPressedAction(unsigned int);
+        void keyDownAction(unsigned int);
 
         std::map<int /** keycode **/, unsigned int /** action **/> getControls();
 

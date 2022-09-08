@@ -71,19 +71,30 @@ namespace world {
         }
     }
 
-    void Scene::action(unsigned int action) {
-        if (onActionMethods.contains(action)) {
-            ((*this).*(onActionMethods[action]))();
-        } else {
-            unsigned int objectId = action / OBJECT_CONTROLS_OFFSET;
-            Object *object =
-                    currentObject->objectId == objectId ? currentObject :
-                    camera->objectId == objectId ? camera : nullptr;
+    void Scene::keyDownAction(unsigned int action) {
+        if (onKeyDownActionMethods.contains(action)) {
+            return ((*this).*(onKeyDownActionMethods[action]))();
+        }
+        unsigned int objectId = action / OBJECT_CONTROLS_OFFSET;
+        action -= (objectId * OBJECT_CONTROLS_OFFSET);
+        if (objectId == currentObject->objectId) {
+            return currentObject->keyDownAction((Object::ActionList) action);
+        }
+        if (objectId == camera->objectId) {
+            return camera->keyDownAction((Camera::ActionList) action);
+        }
+    }
 
-            if (object != nullptr) {
-                action -= objectId * OBJECT_CONTROLS_OFFSET;
-                object->action((Object::ActionList) action);
-            }
+    void Scene::keyPressedAction(unsigned int action) {
+        if (onKeyPressedActionMethods.contains(action)) {
+            return ((*this).*(onKeyPressedActionMethods[action]))();
+        }
+        unsigned int objectId = action / OBJECT_CONTROLS_OFFSET;
+        if (objectId == currentObject->objectId) {
+            return currentObject->keyPressedAction((Object::ActionList) action);
+        }
+        if (objectId == camera->objectId) {
+            return camera->keyPressedAction((Camera::ActionList) action);
         }
     }
 
