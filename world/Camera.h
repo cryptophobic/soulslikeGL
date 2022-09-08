@@ -7,14 +7,14 @@ namespace world {
 
     class Camera : public Object {
     public:
-        Camera();
-        Object *objectToFollow;
-        float fov = 0.0f; // zoom
+        explicit Camera(unsigned int newObjectId, ObjectState initialState);
+        Object *objectToFollow = nullptr;
         void followTheObject(Object *);
         void follow();
+        float fov = 0.0f; // zoom
+        float sensitivity;
 
     protected:
-        const float sensitivity;
     };
 
 } // world

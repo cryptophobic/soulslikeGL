@@ -86,12 +86,11 @@ namespace render {
 
             glm::mat4 view;
             auto camera = controller.getCurrentScene()->camera;
-            view = glm::lookAt(camera->position,camera->position + camera->frontVector,camera->upVector);
+            view = glm::lookAt(camera->state.position,camera->state.position + camera->frontVector,camera->upVector);
             glm::mat4 projection;
             int width, height;
             glfwGetWindowSize(window, &width, &height);
             projection = glm::perspective(glm::radians((float)camera->fov), (float) width / (float) height, 0.1f, 100.0f);
-
             sceneRenderer.draw(view, projection);
 
             // check and call events and swap the buffers

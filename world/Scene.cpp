@@ -9,23 +9,13 @@ namespace world {
     Scene::Scene() {
         sceneControls = settings::sceneInputSettings;
         currentObject = nullptr;
-        camera = new Camera();
-        camera->pitch = settings::testWorld.cameraSettings.pitch;
-        camera->yaw = settings::testWorld.cameraSettings.yaw;
-        camera->fov = settings::testWorld.cameraSettings.fov;
-        camera->position = settings::testWorld.cameraSettings.position;
-        camera->objectId = ++lastObjectId;
-        camera->updateDirection();
-
+        camera = new Camera(++lastObjectId, settings::testWorld.cameraInitialState);
         updateControlsMap();
     }
 
     void Scene::putNewObject(const std::vector<float> *vertices, glm::vec3 position) {
-        auto object = new Object();
+        auto object = new Object(++lastObjectId, ObjectState{0.0f, 0.0f, 0.0f, position});
         object->objectGeometry = new ObjectGeometry(*vertices);
-        object->position = position;
-        object->updateDirection();
-        object->objectId = ++lastObjectId;
         objects.emplace_back(object);
         if (currentObject == nullptr) {
             setCurrentObject(object);

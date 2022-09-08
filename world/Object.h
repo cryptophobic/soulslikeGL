@@ -17,9 +17,16 @@
 
 namespace world {
 
+    struct ObjectState {
+        float yaw;
+        float pitch;
+        float roll;
+        glm::vec3 position;
+    };
+
     class Object {
     public:
-        Object();
+        explicit Object(unsigned int newObjectId, ObjectState initialState);
         enum ActionList : unsigned int
                 {moveForward = 1, moveBackward = 2, rotateLeft = 3, rotateRight = 4, strafeLeft = 5, strafeRight = 6, freeRotate = 7};
 
@@ -39,14 +46,16 @@ namespace world {
         [[nodiscard]] unsigned int getMovingState() const;
         void stopMoving(unsigned int moving);
 
+        ObjectState state {
+            0.0f,
+            0.0f,
+            0.0f,
+            {0.0f, 0.0f, 0.0f}
+        };
 
-        glm::vec3 position;
-        float pitch = 0.0f; // x axis
-        float yaw = 0.0f;// y axis
-        float roll = 0.0f;// reserved
-        virtual void updateDirection();
-        ObjectGeometry* objectGeometry;
-        glm::vec3 frontVector;
+        void updateDirection();
+        ObjectGeometry* objectGeometry = nullptr;
+        glm::vec3 frontVector{0.0f, 0.0f, 0.0f};
         glm::vec3 upVector{0.0f, 1.0f, 0.0f};
 
         bool display = true;

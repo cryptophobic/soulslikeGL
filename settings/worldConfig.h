@@ -14,6 +14,14 @@
 namespace settings {
     const struct {
         const glm::vec3 objectPositions[10];
+        world::ObjectState cameraInitialState {
+            90.0f,
+            0.0f,
+            0.0f,
+            glm::vec3(0.0f, 0.0f, 3.0f)
+        };
+        const float cameraFow = 45.0f;
+        const float cameraSensitivity = 0.1f;
         const struct objectSettingsStruct {
             float yaw = 90.0f;
             float pitch = 0;
