@@ -26,16 +26,16 @@ namespace world {
     void Camera::follow() {
         if (objectToFollow == nullptr) return;
         state.yaw = objectToFollow->state.yaw;
-        state.pitch = objectToFollow->state.pitch - 35.0f;
+        state.pitch = objectToFollow->state.pitch - 40.0f;
         state.position = objectToFollow->state.position;
         updateDirection();
         glm::vec3 rightVector = glm::normalize(glm::cross(frontVector, upVector));
-        state.position += glm::normalize(glm::cross(frontVector, rightVector)) * -2.0f;
-        moveObject(7.0f);
+        state.position += glm::normalize(glm::cross(frontVector, rightVector)) * -6.0f; // up
+        state.position += glm::normalize(glm::cross(upVector, rightVector)) * -7.0f; // back
     }
 
-    void Camera::executeActions(float moveSpeed, float rotateSpeed) {
-        Object::executeActions(moveSpeed, rotateSpeed);
+    void Camera::executeActions() {
+        Object::executeActions();
         follow();
     }
 

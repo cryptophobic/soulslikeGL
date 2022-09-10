@@ -28,7 +28,7 @@ namespace world {
         void keyDownAction(unsigned int);
         void mouseMoveAction(double xPos, double yPos);
         void switchObjectMethod();
-        void processState(float objectSpeed);
+        void processState();
         std::map<int /** keycode **/, unsigned int /** action **/> controls;
 
         enum ActionList : unsigned int {switchObject = 1};

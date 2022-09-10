@@ -1,22 +1,18 @@
-//
-// Created by dima on 27.08.22.
-//
-
 #include "Object.h"
 #include "../settings/worldConfig.h"
+#include "../render/gl/app.h"
+
+using namespace render;
 
 namespace world {
     Object::Object(unsigned int newObjectId, ObjectState initialState) :
         objectId(newObjectId),
         state(initialState),
         controls(settings::objectInputSettings),
-        sensitivity(settings::testWorld.mouseSensitivity)
+        sensitivity(settings::testWorld.mouseSensitivity),
+        moveSpeed(settings::testWorld.objectSpeed),
+        rotateSpeed(settings::testWorld.rotateSpeed)
     {
-        updateDirection();
-    }
-
-    void Object::rotateObject(float objectSpeed) {
-        state.yaw += objectSpeed;
         updateDirection();
     }
 
@@ -27,25 +23,28 @@ namespace world {
         frontVector = glm::normalize(frontVector);
     }
 
-    void Object::moveObject(float objectSpeed) {
-        state.position -= objectSpeed * frontVector;
+    void Object::moveObject(int direction) {
+        state.position += moveSpeed * App::deltaTime * (float) direction * frontVector;
     }
 
-    void Object::strafeObject(float objectSpeed) {
-        state.position += glm::normalize(glm::cross(frontVector, upVector)) * objectSpeed;
+    void Object::rotateObject(int direction) {
+        state.yaw += rotateSpeed * (float) direction * App::deltaTime;
         updateDirection();
     }
 
-    void Object::executeActions(float moveSpeed, float rotateSpeed) {
-        if (getMovingState() != 0) {
-            move(moveSpeed, rotateSpeed);
-        }
-        if (xOffset != 0 || yOffset != 0) {
-            rotate();
-        }
+    void Object::strafeObject(int direction) {
+        state.position -= glm::normalize(glm::cross(frontVector, upVector)) * moveSpeed * App::deltaTime * (float) direction;
+        updateDirection();
+    }
+
+    void Object::executeActions() {
+        move();
+        rotate();
     }
 
     void Object::rotate() {
+        if (xOffset == 0 && yOffset == 0) return;
+
         state.yaw += (float)xOffset;
         //state.pitch += (float)yOffset;
 
@@ -56,13 +55,14 @@ namespace world {
         updateDirection();
     }
 
-    void Object::move(float moveSpeed, float rotateSpeed) {
-        if (getMovingState() & SOULSLIKEGL_MOVE_FORWARD) moveObject(-moveSpeed);
-        if (getMovingState() & SOULSLIKEGL_MOVE_BACKWARD) moveObject(moveSpeed);
-        if (getMovingState() & SOULSLIKEGL_ROTATE_RIGHT) rotateObject(-rotateSpeed);
-        if (getMovingState() & SOULSLIKEGL_ROTATE_LEFT) rotateObject(rotateSpeed);
-        if (getMovingState() & SOULSLIKEGL_STRAFE_RIGHT) strafeObject(moveSpeed);
-        if (getMovingState() & SOULSLIKEGL_STRAFE_LEFT) strafeObject(-moveSpeed);
+    void Object::move() {
+        if (getMovingState() == 0) return;
+        if (getMovingState() & SOULSLIKEGL_MOVE_FORWARD) moveObject(Directions::forward);
+        if (getMovingState() & SOULSLIKEGL_MOVE_BACKWARD) moveObject(Directions::backward);
+        if (getMovingState() & SOULSLIKEGL_ROTATE_RIGHT) rotateObject(Directions::right);
+        if (getMovingState() & SOULSLIKEGL_ROTATE_LEFT) rotateObject(Directions::left);
+        if (getMovingState() & SOULSLIKEGL_STRAFE_RIGHT) strafeObject(Directions::right);
+        if (getMovingState() & SOULSLIKEGL_STRAFE_LEFT) strafeObject(Directions::left);
         stopMoving(getMovingState());
     }
 

@@ -98,9 +98,9 @@ namespace world {
         }
     }
 
-    void Scene::processState(const float objectSpeed) {
+    void Scene::processState() {
         for (auto object: objects) {
-            object->executeActions(objectSpeed, objectSpeed * 50);
+            object->executeActions();
         }
         // TODO: sort this out
         lastX = lastXCandidate;

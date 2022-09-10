@@ -27,16 +27,24 @@ namespace world {
     class Object {
     public:
         explicit Object(unsigned int newObjectId, ObjectState initialState);
+        enum Directions : int {
+            forward = 1, backward = -1,
+            left = 1, right = -1
+        };
         enum ActionList : unsigned int
                 {
-            moveForward = 1, moveBackward = 2, rotateLeft = 3, rotateRight = 4, strafeLeft = 5, strafeRight = 6,
-            freeRotate = 7, zoom = 8};
+                    moveForward = 1, moveBackward = 2,
+                    rotateLeft = 3, rotateRight = 4,
+                    strafeLeft = 5, strafeRight = 6,
+                    freeRotate = 7, zoom = 8
+                };
 
-        void rotateObject(float objectSpeed);
-        void moveObject(float objectSpeed);
-        void move(float moveSpeed, float rotateSpeed);
+        void rotateObject(int direction);
+        void moveObject(int direction);
+        void strafeObject(int direction);
         void rotate();
-        virtual void executeActions(float moveSpeed, float rotateSpeed);
+        void move();
+        virtual void executeActions();
 
         void keyPressedAction(ActionList);
         void keyDownAction(ActionList);
@@ -72,6 +80,9 @@ namespace world {
         double xOffset = 0;
         double yOffset = 0;
 
+        float moveSpeed;
+        float rotateSpeed;
+
         std::map<unsigned int, void (Object::*)()> onKeyDownActionMethods {
                 {ActionList::moveForward, &Object::moveForwardMethod},
                 {ActionList::moveBackward, &Object::moveBackwardMethod},
@@ -86,9 +97,6 @@ namespace world {
 //                {ActionList::freeRotate, &Object::freeRotateMethod},
 //                {ActionList::zoom, &Object::zoomMethod},
 //        };
-
-
-        void strafeObject(float speed);
     };
 
 } // world

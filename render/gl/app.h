@@ -19,22 +19,23 @@ namespace render {
     class App {
     public:
         static void start(int argc, char* argv[]);
-        static void terminate();
+
+        static float lastFrame;
+        static float deltaTime;
+    private:
         static void process_input();
         static void event_loop();
-    private:
         static void set_mouse_position_callback();
         static void set_scroll_callback();
         static void set_framebuffer_size_callback();
         static void set_key_callback();
         static void glfw_create_window();
         static void set_scene();
+        static void terminate();
 
         static SceneRenderer sceneRenderer;
         static engine::Controller controller;
         static GLFWwindow *window;
-        static float lastFrame;
-        static float deltaTime;
     };
 }
 
