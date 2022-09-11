@@ -31,13 +31,13 @@ namespace world {
             forward = 1, backward = -1,
             left = 1, right = -1
         };
-        enum ActionList : unsigned int
-                {
-                    moveForward = 1, moveBackward = 2,
-                    rotateLeft = 3, rotateRight = 4,
-                    strafeLeft = 5, strafeRight = 6,
-                    freeRotate = 7, zoom = 8
-                };
+
+        enum ActionList : unsigned int {
+            moveForward = 1, moveBackward = 2,
+            rotateLeft = 3, rotateRight = 4,
+            strafeLeft = 5, strafeRight = 6,
+            freeRotate = 7, zoom = 8
+        };
 
         void rotateObject(int direction);
         void moveObject(int direction);

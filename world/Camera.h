@@ -12,7 +12,7 @@ namespace world {
         void bindToTheObject(Object *object);
         void follow();
         float fov; // zoom
-        void executeActions();
+        void executeActions() override;
 
     protected:
     };
