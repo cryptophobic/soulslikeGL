@@ -101,8 +101,13 @@ namespace world {
 
     void Scene::processState() {
         for (auto object: objects) {
+            // Camera must be processed the last
+            // TODO: Code smells bad
+            if (object->objectId == camera->objectId) continue;
             object->executeActions();
         }
+        camera->executeActions();
+
         // TODO: sort this out
         lastX = lastXCandidate;
         lastY = lastYCandidate;

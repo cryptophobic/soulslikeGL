@@ -71,6 +71,14 @@ namespace render {
 
     void App::event_loop() {
         int i = 0;
+        glm::mat4 view;
+        auto camera = controller.getCurrentScene()->camera;
+        view = glm::lookAt(camera->state.position,camera->state.position + camera->frontVector,camera->upVector);
+        glm::mat4 projection;
+        int width, height;
+        glfwGetWindowSize(window, &width, &height);
+        projection = glm::perspective(glm::radians((float)camera->fov), (float) width / (float) height, 0.1f, 100.0f);
+
         while(!glfwWindowShouldClose(window)) {
             auto currentFrame = (float) glfwGetTime();
             DataBus::deltaTime = currentFrame - DataBus::lastFrame;
@@ -79,20 +87,19 @@ namespace render {
             // input
             process_input();
 
-            if (i++ == 10) {
+            if (i++ == 20) {
                 controller.getCurrentScene()->processState();
+
+                camera = controller.getCurrentScene()->camera;
+                view = glm::lookAt(camera->state.position,camera->state.position + camera->frontVector,camera->upVector);
+                glfwGetWindowSize(window, &width, &height);
+                projection = glm::perspective(glm::radians((float)camera->fov), (float) width / (float) height, 0.1f, 100.0f);
+
                 i = 0;
             }
             glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-            glm::mat4 view;
-            auto camera = controller.getCurrentScene()->camera;
-            view = glm::lookAt(camera->state.position,camera->state.position + camera->frontVector,camera->upVector);
-            glm::mat4 projection;
-            int width, height;
-            glfwGetWindowSize(window, &width, &height);
-            projection = glm::perspective(glm::radians((float)camera->fov), (float) width / (float) height, 0.1f, 100.0f);
             sceneRenderer.draw(view, projection);
 
             // check and call events and swap the buffers
