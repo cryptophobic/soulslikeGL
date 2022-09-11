@@ -9,14 +9,14 @@
 
 namespace world::controls {
 
-//    class Controls {
-//        std::map<unsigned int, void *()> onKeyDownActionMethods {};
-//        std::map<unsigned int, void *()> onKeyPressedActionMethods {};
-//        std::map<unsigned int, void *()> onMouseButtonDownActionMethods {};
-//        std::map<unsigned int, void *()> onMouseButtonPressedActionMethods {};
-//        void (*onMousePositionChanged) (double, double) = nullptr;
-//        void (*onMouseScroll) (double, double) = nullptr;
-//    };
+    class Controls {
+//        std::map<int, void *()> onKeyDownActionMethods {};
+//        std::map<int, void *()> onKeyPressedActionMethods {};
+//        std::map<int, void *()> onMouseButtonDownActionMethods {};
+//        std::map<int, void *()> onMouseButtonPressedActionMethods {};
+        void (*onMousePositionChanged) (double, double) = nullptr;
+        void (*onMouseScroll) (double, double) = nullptr;
+    };
 
 } // controls
 
