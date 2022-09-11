@@ -5,8 +5,14 @@
 #ifndef SOULSLIKEGL_OBJECT_H
 #define SOULSLIKEGL_OBJECT_H
 
+namespace world::behaviours {
+    class Move;
+}
+
 #include <glm/glm.hpp>
 #include "ObjectGeometry.h"
+#include "behaviours/Move.h"
+#include "../settings/worldConfig.h"
 
 #define SOULSLIKEGL_MOVE_FORWARD 1
 #define SOULSLIKEGL_MOVE_BACKWARD 2
@@ -16,13 +22,6 @@
 #define SOULSLIKEGL_STRAFE_RIGHT 32
 
 namespace world {
-
-    struct ObjectState {
-        float yaw;
-        float pitch;
-        float roll;
-        glm::vec3 position;
-    };
 
     class Object {
     public:
@@ -39,9 +38,6 @@ namespace world {
             freeRotate = 7, zoom = 8
         };
 
-        void rotateObject(int direction);
-        void moveObject(int direction);
-        void strafeObject(int direction);
         void rotate();
         void move();
         virtual void executeActions();
@@ -55,9 +51,6 @@ namespace world {
         void strafeLeftMethod();
         void strafeRightMethod();
         void freeRotateMethod(double, double, double, double);
-
-        [[nodiscard]] unsigned int getMovingState() const;
-        void stopMoving(unsigned int moving);
 
         ObjectState state {
             0.0f,
@@ -75,6 +68,7 @@ namespace world {
         std::map<int, ActionList> controls;
         unsigned int objectId;
         float sensitivity;
+        behaviours::Move* behaviour;
     protected:
         unsigned int movingState = 0;
         double xOffset = 0;
@@ -92,11 +86,6 @@ namespace world {
         std::map<unsigned int, void (Object::*)()> onKeyPressedActionMethods {};
 
         void (Object::*onMouseMoveMethod) (double, double, double, double) = &Object::freeRotateMethod;
-
-//        std::map<unsigned int, void (Object::*)()> onMouseEventsMethods {
-//                {ActionList::freeRotate, &Object::freeRotateMethod},
-//                {ActionList::zoom, &Object::zoomMethod},
-//        };
     };
 
 } // world

@@ -1,7 +1,12 @@
 #ifndef SOULSLIKEGL_MOVE_H
 #define SOULSLIKEGL_MOVE_H
 
+namespace world {
+    class Object;
+}
+
 #include "../Object.h"
+#include "../../engine/DataBus.h"
 
 namespace world::behaviours {
 
@@ -9,12 +14,12 @@ namespace world::behaviours {
     public:
         explicit Move(Object *);
 
-        void enqueueMoveForward(float numerator);
-        void enqueueMoveBackward(float numerator);
-        void enqueueStrafeLeft(float numerator);
-        void enqueueStrafeRight(float numerator);
-        void enqueueRotateLeft(float numerator);
-        void enqueueRotateRight(float numerator);
+        void enqueueMoveForward(float numerator = DataBus::deltaTime);
+        void enqueueMoveBackward(float numerator = DataBus::deltaTime);
+        void enqueueStrafeLeft(float numerator = DataBus::deltaTime);
+        void enqueueStrafeRight(float numerator = DataBus::deltaTime);
+        void enqueueRotateLeft(float numerator = DataBus::deltaTime);
+        void enqueueRotateRight(float numerator = DataBus::deltaTime);
         void execute();
 
     protected:

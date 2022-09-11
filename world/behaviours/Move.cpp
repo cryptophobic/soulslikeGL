@@ -1,16 +1,12 @@
 #include "Move.h"
-#include "../../render/gl/app.h"
 #include "../../settings/worldConfig.h"
-
-using namespace render;
 
 namespace world::behaviours {
 
-    Move::Move(Object *object) {
-        boundObject = object;
-        moveSpeed = settings::testWorld.objectSpeed;
-        rotateSpeed = settings::testWorld.rotateSpeed;
-    }
+    Move::Move(Object *object):
+            boundObject(object),
+            moveSpeed(settings::testWorld.objectSpeed),
+            rotateSpeed(settings::testWorld.rotateSpeed) {}
 
     void Move::execute() {
         executeMove();
@@ -47,30 +43,30 @@ namespace world::behaviours {
     }
 
     void Move::enqueueRotate(float numerator) {
-        rotateQueue += rotateSpeed * numerator;
+        rotateQueue -= rotateSpeed * numerator;
     }
 
-    void Move::enqueueMoveForward(float numerator = App::deltaTime) {
+    void Move::enqueueMoveForward(float numerator) {
         enqueueMove(numerator);
     }
 
-    void Move::enqueueMoveBackward(float numerator = App::deltaTime) {
+    void Move::enqueueMoveBackward(float numerator) {
         enqueueMove(-numerator);
     }
 
-    void Move::enqueueStrafeLeft(float numerator = App::deltaTime) {
+    void Move::enqueueStrafeLeft(float numerator) {
         enqueueStrafe(-numerator);
     }
 
-    void Move::enqueueStrafeRight(float numerator = App::deltaTime) {
+    void Move::enqueueStrafeRight(float numerator) {
         enqueueStrafe(numerator);
     }
 
-    void Move::enqueueRotateLeft(float numerator = App::deltaTime) {
+    void Move::enqueueRotateLeft(float numerator) {
         enqueueRotate(-numerator);
     }
 
-    void Move::enqueueRotateRight(float numerator = App::deltaTime) {
+    void Move::enqueueRotateRight(float numerator) {
         enqueueRotate(numerator);
     }
 } // behaviours

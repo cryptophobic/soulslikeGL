@@ -1,7 +1,3 @@
-//
-// Created by dmitr on 11.09.2022.
-//
-
 #ifndef SOULSLIKEGL_CONTROLS_H
 #define SOULSLIKEGL_CONTROLS_H
 

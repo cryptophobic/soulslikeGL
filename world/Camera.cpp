@@ -3,8 +3,7 @@
 //
 
 #include "Camera.h"
-
-#include "../settings/worldConfig.h"
+#include "../settings/controls.h"
 
 namespace world {
 
