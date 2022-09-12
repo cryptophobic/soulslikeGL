@@ -1,8 +1,6 @@
 #include "Object.h"
-#include "../settings/worldConfig.h"
-#include "../render/gl/app.h"
-
-using namespace render;
+#include "../engine/DataBus.h"
+#include "../settings/controls.h"
 
 namespace world {
     Object::Object(unsigned int newObjectId, ObjectState initialState) :
@@ -11,7 +9,8 @@ namespace world {
         controls(settings::objectInputSettings),
         sensitivity(settings::testWorld.mouseSensitivity),
         moveSpeed(settings::testWorld.objectSpeed),
-        rotateSpeed(settings::testWorld.rotateSpeed)
+        rotateSpeed(settings::testWorld.rotateSpeed),
+        behaviour(new behaviours::Move(this))
     {
         updateDirection();
     }
@@ -21,20 +20,6 @@ namespace world {
         frontVector.y = (float) sin(glm::radians(state.pitch));
         frontVector.z = (float) (sin(glm::radians(-state.yaw)) * cos(glm::radians(state.pitch)));
         frontVector = glm::normalize(frontVector);
-    }
-
-    void Object::moveObject(int direction) {
-        state.position += moveSpeed * App::deltaTime * (float) direction * frontVector;
-    }
-
-    void Object::rotateObject(int direction) {
-        state.yaw += rotateSpeed * (float) direction * App::deltaTime;
-        updateDirection();
-    }
-
-    void Object::strafeObject(int direction) {
-        state.position -= glm::normalize(glm::cross(frontVector, upVector)) * moveSpeed * App::deltaTime * (float) direction;
-        updateDirection();
     }
 
     void Object::executeActions() {
@@ -56,14 +41,7 @@ namespace world {
     }
 
     void Object::move() {
-        if (getMovingState() == 0) return;
-        if (getMovingState() & SOULSLIKEGL_MOVE_FORWARD) moveObject(Directions::forward);
-        if (getMovingState() & SOULSLIKEGL_MOVE_BACKWARD) moveObject(Directions::backward);
-        if (getMovingState() & SOULSLIKEGL_ROTATE_RIGHT) rotateObject(Directions::right);
-        if (getMovingState() & SOULSLIKEGL_ROTATE_LEFT) rotateObject(Directions::left);
-        if (getMovingState() & SOULSLIKEGL_STRAFE_RIGHT) strafeObject(Directions::right);
-        if (getMovingState() & SOULSLIKEGL_STRAFE_LEFT) strafeObject(Directions::left);
-        stopMoving(getMovingState());
+        behaviour->execute();
     }
 
     void Object::keyPressedAction(ActionList action) {
@@ -79,27 +57,27 @@ namespace world {
     }
 
     void Object::moveForwardMethod() {
-        movingState |= SOULSLIKEGL_MOVE_FORWARD;
+        behaviour->enqueueMoveForward();
     }
 
     void Object::moveBackwardMethod() {
-        movingState |= SOULSLIKEGL_MOVE_BACKWARD;
+        behaviour->enqueueMoveBackward();
     }
 
     void Object::rotateLeftMethod() {
-        movingState |= SOULSLIKEGL_ROTATE_LEFT;
+        behaviour->enqueueRotateLeft();
     }
 
     void Object::rotateRightMethod() {
-        movingState |= SOULSLIKEGL_ROTATE_RIGHT;
+        behaviour->enqueueRotateRight();
     }
 
     void Object::strafeLeftMethod() {
-        movingState |= SOULSLIKEGL_STRAFE_LEFT;
+        behaviour->enqueueStrafeLeft();
     }
 
     void Object::strafeRightMethod() {
-        movingState |= SOULSLIKEGL_STRAFE_RIGHT;
+        behaviour->enqueueStrafeRight();
     }
 
     void Object::freeRotateMethod(double xPos, double yPos, double lastX, double lastY) {
@@ -108,13 +86,5 @@ namespace world {
 
         xOffset *= -sensitivity;
         yOffset *= sensitivity;
-    }
-
-    unsigned int Object::getMovingState() const {
-        return movingState;
-    }
-
-    void Object::stopMoving(unsigned int moving) {
-        movingState ^= moving;
     }
 } // world

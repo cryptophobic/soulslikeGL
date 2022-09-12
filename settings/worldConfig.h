@@ -9,7 +9,15 @@
 #include <GLFW/glfw3.h>
 #include <glm/vec3.hpp>
 #include <map>
-#include "../world/Scene.h"
+
+namespace world {
+    struct ObjectState {
+        float yaw;
+        float pitch;
+        float roll;
+        glm::vec3 position;
+    };
+}
 
 namespace settings {
     const struct {
@@ -44,24 +52,6 @@ namespace settings {
                     glm::vec3(0.0f, 0.0f, -2.0f),
                     glm::vec3(2.0f, 0.0f, -2.0f)
             }
-    };
-
-    const std::map<int, world::Scene::ActionList> sceneInputSettings{
-            {GLFW_KEY_TAB, world::Scene::ActionList::switchObject}
-    };
-
-    const std::map<int, world::Object::ActionList> objectInputSettings{
-            {GLFW_KEY_DOWN, world::Object::ActionList::moveBackward},
-            {GLFW_KEY_UP, world::Object::ActionList::moveForward},
-            {GLFW_KEY_LEFT, world::Object::ActionList::rotateLeft},
-            {GLFW_KEY_RIGHT, world::Object::ActionList::rotateRight},
-    };
-
-    const std::map<int, world::Camera::ActionList> cameraInputSettings{
-            {GLFW_KEY_S, world::Camera::ActionList::moveBackward},
-            {GLFW_KEY_W, world::Camera::ActionList::moveForward},
-            {GLFW_KEY_A, world::Camera::ActionList::strafeLeft},
-            {GLFW_KEY_D, world::Camera::ActionList::strafeRight},
     };
 }
 

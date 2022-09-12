@@ -19,9 +19,6 @@ namespace render {
     class App {
     public:
         static void start(int argc, char* argv[]);
-
-        static float lastFrame;
-        static float deltaTime;
     private:
         static void process_input();
         static void event_loop();

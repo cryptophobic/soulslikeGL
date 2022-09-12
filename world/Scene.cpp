@@ -1,8 +1,8 @@
 #include <iostream>
 #include "Scene.h"
 #include "Camera.h"
-#include "../settings/worldConfig.h"
 #include "../settings/config.h"
+#include "../settings/controls.h"
 
 namespace world {
 
@@ -17,6 +17,7 @@ namespace world {
         auto object = new Object(++lastObjectId, ObjectState{0.0f, 0.0f, 0.0f, position});
         object->objectGeometry = new ObjectGeometry(*vertices);
         objects.emplace_back(object);
+        //object->behaviour = new behaviours::Move(object);
         if (currentObject == nullptr) {
             setCurrentObject(object);
         }
@@ -100,8 +101,13 @@ namespace world {
 
     void Scene::processState() {
         for (auto object: objects) {
+            // Camera must be processed the last
+            // TODO: Code smells bad
+            if (object->objectId == camera->objectId) continue;
             object->executeActions();
         }
+        camera->executeActions();
+
         // TODO: sort this out
         lastX = lastXCandidate;
         lastY = lastYCandidate;
