@@ -1,7 +1,3 @@
-//
-// Created by dima on 27.08.22.
-//
-
 #ifndef SOULSLIKEGL_OBJECT_H
 #define SOULSLIKEGL_OBJECT_H
 
@@ -14,23 +10,11 @@ namespace world::behaviours {
 #include "behaviours/Move.h"
 #include "../settings/worldConfig.h"
 
-#define SOULSLIKEGL_MOVE_FORWARD 1
-#define SOULSLIKEGL_MOVE_BACKWARD 2
-#define SOULSLIKEGL_ROTATE_LEFT 4
-#define SOULSLIKEGL_ROTATE_RIGHT 8
-#define SOULSLIKEGL_STRAFE_LEFT 16
-#define SOULSLIKEGL_STRAFE_RIGHT 32
-
 namespace world {
 
     class Object {
     public:
         explicit Object(unsigned int newObjectId, ObjectState initialState);
-        enum Directions : int {
-            forward = 1, backward = -1,
-            left = 1, right = -1
-        };
-
         enum ActionList : unsigned int {
             moveForward = 1, moveBackward = 2,
             rotateLeft = 3, rotateRight = 4,

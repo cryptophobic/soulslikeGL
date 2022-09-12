@@ -1,7 +1,3 @@
-//
-// Created by dima on 27.08.22.
-//
-
 #include "Camera.h"
 #include "../settings/controls.h"
 
