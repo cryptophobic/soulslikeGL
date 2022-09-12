@@ -7,8 +7,6 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include "common/Texture.h"
-#include "common/Shader.h"
 #include "SceneRenderer.h"
 #include "../../engine/Controller.h"
 

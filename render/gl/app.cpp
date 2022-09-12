@@ -1,6 +1,3 @@
-//
-// Created by dima on 11.08.22.
-//
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
@@ -70,7 +67,8 @@ namespace render {
     }
 
     void App::event_loop() {
-        int i = 0;
+        int i = 0, j = 0;
+
         glm::mat4 view;
         auto camera = controller.getCurrentScene()->camera;
         view = glm::lookAt(camera->state.position,camera->state.position + camera->frontVector,camera->upVector);
@@ -87,7 +85,7 @@ namespace render {
             // input
             process_input();
 
-            if (i++ == 20) {
+            if (i++ == 100) {
                 controller.getCurrentScene()->processState();
 
                 camera = controller.getCurrentScene()->camera;
@@ -100,11 +98,14 @@ namespace render {
             glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-            sceneRenderer.draw(view, projection);
+            if (j++ >= 100) {
+                sceneRenderer.draw(view, projection);
+                glfwSwapBuffers(window);
+                j = 0;
+            }
 
             // check and call events and swap the buffers
             glfwPollEvents();
-            glfwSwapBuffers(window);
         }
     }
 
