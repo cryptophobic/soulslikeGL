@@ -5,10 +5,10 @@
 #ifndef SOULSLIKEGL_FREEMOVE_H
 #define SOULSLIKEGL_FREEMOVE_H
 
-namespace world::behaviours {
+namespace world::abilities {
      class FreeMove {
 
      };
-} // behaviours
+} // abilities
 
 #endif //SOULSLIKEGL_FREEMOVE_H

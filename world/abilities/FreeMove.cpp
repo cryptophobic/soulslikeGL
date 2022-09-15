@@ -4,5 +4,5 @@
 
 #include "FreeMove.h"
 
-namespace world::behaviours {
-} // behaviours
+namespace world::abilities {
+} // abilities

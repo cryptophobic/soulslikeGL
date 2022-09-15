@@ -1,13 +1,8 @@
 #ifndef SOULSLIKEGL_OBJECT_H
 #define SOULSLIKEGL_OBJECT_H
 
-namespace world::behaviours {
-    class Move;
-}
-
 #include <glm/glm.hpp>
 #include "ObjectGeometry.h"
-#include "behaviours/Move.h"
 #include "../settings/worldConfig.h"
 
 namespace world {
@@ -52,14 +47,9 @@ namespace world {
         std::map<int, ActionList> controls;
         unsigned int objectId;
         float sensitivity;
-        behaviours::Move* behaviour;
     protected:
-        unsigned int movingState = 0;
         double xOffset = 0;
         double yOffset = 0;
-
-        float moveSpeed;
-        float rotateSpeed;
 
         std::map<unsigned int, void (Object::*)()> onKeyDownActionMethods {
                 {ActionList::moveForward, &Object::moveForwardMethod},

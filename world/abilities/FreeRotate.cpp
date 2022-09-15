@@ -5,6 +5,6 @@
 #include "FreeRotate.h"
 
 namespace world {
-    namespace behaviours {
+    namespace abilities {
     } // world
-} // behaviours
+} // abilities

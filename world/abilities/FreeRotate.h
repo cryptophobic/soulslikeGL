@@ -5,12 +5,12 @@
 #ifndef SOULSLIKEGL_FREEROTATE_H
 #define SOULSLIKEGL_FREEROTATE_H
 
-namespace world::behaviours {
+namespace world::abilities {
 
         class FreeRotate {
 
         };
 
-    } // behaviours
+    } // abilities
 
 #endif //SOULSLIKEGL_FREEROTATE_H

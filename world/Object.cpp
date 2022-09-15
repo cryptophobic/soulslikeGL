@@ -7,10 +7,7 @@ namespace world {
         objectId(newObjectId),
         state(initialState),
         controls(settings::objectInputSettings),
-        sensitivity(settings::testWorld.mouseSensitivity),
-        moveSpeed(settings::testWorld.objectSpeed),
-        rotateSpeed(settings::testWorld.rotateSpeed),
-        behaviour(new behaviours::Move(this))
+        sensitivity(settings::testWorld.mouseSensitivity)
     {
         updateDirection();
     }
@@ -23,7 +20,7 @@ namespace world {
     }
 
     void Object::executeActions() {
-        move();
+        //move();
         rotate();
     }
 
@@ -41,7 +38,7 @@ namespace world {
     }
 
     void Object::move() {
-        behaviour->execute();
+        //behaviour->execute();
     }
 
     void Object::keyPressedAction(ActionList action) {
@@ -57,27 +54,27 @@ namespace world {
     }
 
     void Object::moveForwardMethod() {
-        behaviour->enqueueMoveForward();
+        //behaviour->enqueueMoveForward();
     }
 
     void Object::moveBackwardMethod() {
-        behaviour->enqueueMoveBackward();
+        //behaviour->enqueueMoveBackward();
     }
 
     void Object::rotateLeftMethod() {
-        behaviour->enqueueRotateLeft();
+        //behaviour->enqueueRotateLeft();
     }
 
     void Object::rotateRightMethod() {
-        behaviour->enqueueRotateRight();
+        //behaviour->enqueueRotateRight();
     }
 
     void Object::strafeLeftMethod() {
-        behaviour->enqueueStrafeLeft();
+        //behaviour->enqueueStrafeLeft();
     }
 
     void Object::strafeRightMethod() {
-        behaviour->enqueueStrafeRight();
+        //behaviour->enqueueStrafeRight();
     }
 
     void Object::freeRotateMethod(double xPos, double yPos, double lastX, double lastY) {

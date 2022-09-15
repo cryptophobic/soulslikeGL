@@ -1,10 +1,11 @@
+#include <iostream>
 #include "Move.h"
 #include "../../settings/worldConfig.h"
 
-namespace world::behaviours {
+namespace world::abilities {
 
     Move::Move(Object *object):
-            boundObject(object),
+            Ability(object),
             moveSpeed(settings::testWorld.objectSpeed),
             rotateSpeed(settings::testWorld.rotateSpeed) {}
 
@@ -50,8 +51,10 @@ namespace world::behaviours {
         enqueueMove(numerator);
     }
 
-    void Move::enqueueMoveBackward(float numerator) {
-        enqueueMove(-numerator);
+    void Move::enqueueMoveBackward() {
+        enqueueMove(-DataBus::deltaTime);
+        std::cout << "moved" << std::endl;
+        //enqueueMove(-numerator);
     }
 
     void Move::enqueueStrafeLeft(float numerator) {
@@ -69,4 +72,4 @@ namespace world::behaviours {
     void Move::enqueueRotateRight(float numerator) {
         enqueueRotate(numerator);
     }
-} // behaviours
+} // abilities

@@ -1,29 +1,25 @@
 #ifndef SOULSLIKEGL_MOVE_H
 #define SOULSLIKEGL_MOVE_H
 
-namespace world {
-    class Object;
-}
-
 #include "../Object.h"
 #include "../../engine/DataBus.h"
+#include "Ability.h"
 
-namespace world::behaviours {
+namespace world::abilities {
 
-    class Move {
+    class Move : public Ability {
     public:
         explicit Move(Object *);
 
         void enqueueMoveForward(float numerator = DataBus::deltaTime);
-        void enqueueMoveBackward(float numerator = DataBus::deltaTime);
+        void enqueueMoveBackward();
         void enqueueStrafeLeft(float numerator = DataBus::deltaTime);
         void enqueueStrafeRight(float numerator = DataBus::deltaTime);
         void enqueueRotateLeft(float numerator = DataBus::deltaTime);
         void enqueueRotateRight(float numerator = DataBus::deltaTime);
-        void execute();
+        void execute() override;
 
     protected:
-        Object *boundObject = nullptr;
         float moveQueue = 0.0f;
         float rotateQueue = 0.0f;
         float strafeQueue = 0.0f;
@@ -37,6 +33,6 @@ namespace world::behaviours {
         void executeRotate();
     };
 
-} // behaviours
+} // abilities
 
 #endif //SOULSLIKEGL_MOVE_H
