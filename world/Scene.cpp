@@ -1,4 +1,3 @@
-#include <iostream>
 #include "Scene.h"
 #include "Camera.h"
 #include "../settings/config.h"
@@ -32,8 +31,11 @@ namespace world {
 //            {GLFW_KEY_LEFT, world::Object::ActionList::rotateLeft},
 //            {GLFW_KEY_RIGHT, world::Object::ActionList::rotateRight},
 
-            onKeyDownActionMethods[386] = [
-                    ObjectPtr = (abilities::Move *)functionalObject->abilities[0].get()] { ObjectPtr->enqueueMoveBackward(); };
+            onKeyDownActionMethods[386] =
+                    [ObjectPtr = (abilities::Move *)functionalObject->abilities[0].get()]
+                    {
+                        ObjectPtr->enqueueMoveBackward();
+                    };
         }
         functionalObjects.emplace_back(std::move(functionalObject));
     }
@@ -90,7 +92,6 @@ namespace world {
     void Scene::keyDownAction(unsigned int action) {
         if (onKeyDownActionMethods.contains(action)) {
             return onKeyDownActionMethods[action]();
-//            return ((*this).*(onKeyDownActionMethods[action]))();
         }
         unsigned int objectId = action / OBJECT_CONTROLS_OFFSET;
         action -= (objectId * OBJECT_CONTROLS_OFFSET);
