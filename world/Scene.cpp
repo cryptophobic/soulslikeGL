@@ -1,8 +1,8 @@
+#include <iostream>
 #include "Scene.h"
 #include "Camera.h"
 #include "../settings/config.h"
 #include "../settings/controls.h"
-#include "abilities/Move.h"
 
 namespace world {
 
@@ -14,30 +14,13 @@ namespace world {
     }
 
     void Scene::putNewObject(const std::vector<float> *vertices, glm::vec3 position) {
-        std::unique_ptr<FunctionalObject> functionalObject(new FunctionalObject());
-        functionalObject->object = std::make_unique<Object>(
-                ++lastObjectId,
-                ObjectState{0.0f, 0.0f, 0.0f, position});
-
-        functionalObject->object->objectGeometry = new ObjectGeometry(*vertices);
-        functionalObject->abilities.emplace_back(
-                std::make_unique<abilities::Move>(functionalObject->object.get()));
-        //object->behaviour = new abilities::Move(object);
+        auto object = new Object(++lastObjectId, ObjectState{0.0f, 0.0f, 0.0f, position});
+        object->objectGeometry = new ObjectGeometry(*vertices);
+        objects.emplace_back(object);
+        //object->behaviour = new behaviours::Move(object);
         if (currentObject == nullptr) {
-            // TODO: use smart pointer
-            setCurrentObject(functionalObject->object.get());
-//            {GLFW_KEY_DOWN, world::Object::ActionList::moveBackward},
-//            {GLFW_KEY_UP, world::Object::ActionList::moveForward},
-//            {GLFW_KEY_LEFT, world::Object::ActionList::rotateLeft},
-//            {GLFW_KEY_RIGHT, world::Object::ActionList::rotateRight},
-
-            onKeyDownActionMethods[386] =
-                    [ObjectPtr = (abilities::Move *)functionalObject->abilities[0].get()]
-                    {
-                        ObjectPtr->enqueueMoveBackward();
-                    };
+            setCurrentObject(object);
         }
-        functionalObjects.emplace_back(std::move(functionalObject));
     }
 
     void Scene::setCurrentObject(Object *object) {
@@ -91,7 +74,7 @@ namespace world {
 
     void Scene::keyDownAction(unsigned int action) {
         if (onKeyDownActionMethods.contains(action)) {
-            return onKeyDownActionMethods[action]();
+            return ((*this).*(onKeyDownActionMethods[action]))();
         }
         unsigned int objectId = action / OBJECT_CONTROLS_OFFSET;
         action -= (objectId * OBJECT_CONTROLS_OFFSET);
@@ -121,7 +104,6 @@ namespace world {
             // Camera must be processed the last
             // TODO: Code smells bad
             if (object->objectId == camera->objectId) continue;
-            functionalObjects[0]->abilities[0]->execute();
             object->executeActions();
         }
         camera->executeActions();
