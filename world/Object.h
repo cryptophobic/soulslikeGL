@@ -9,25 +9,20 @@ namespace world::behaviours {
 #include "ObjectGeometry.h"
 #include "behaviours/Move.h"
 #include "../settings/worldConfig.h"
+#include "../settings/controls.h"
 
 namespace world {
 
     class Object {
     public:
         explicit Object(unsigned int newObjectId, ObjectState initialState);
-        enum ActionList : unsigned int {
-            moveForward = 1, moveBackward = 2,
-            rotateLeft = 3, rotateRight = 4,
-            strafeLeft = 5, strafeRight = 6,
-            freeRotate = 7, zoom = 8
-        };
 
         void rotate();
         void move();
         virtual void executeActions();
 
-        void keyPressedAction(ActionList);
-        void keyDownAction(ActionList);
+        void keyPressedAction(settings::ActionList);
+        void keyDownAction(settings::ActionList);
         void moveForwardMethod();
         void moveBackwardMethod();
         void rotateLeftMethod();
@@ -49,7 +44,7 @@ namespace world {
         glm::vec3 upVector{0.0f, 1.0f, 0.0f};
 
         bool display = true;
-        std::map<int, ActionList> controls;
+        std::map<int, settings::ActionList> controls;
         unsigned int objectId;
         float sensitivity;
         behaviours::Move* behaviour;
@@ -62,10 +57,10 @@ namespace world {
         float rotateSpeed;
 
         std::map<unsigned int, void (Object::*)()> onKeyDownActionMethods {
-                {ActionList::moveForward, &Object::moveForwardMethod},
-                {ActionList::moveBackward, &Object::moveBackwardMethod},
-                {ActionList::rotateLeft, &Object::rotateLeftMethod},
-                {ActionList::rotateRight, &Object::rotateRightMethod},
+                {settings::ActionList::moveForward, &Object::moveForwardMethod},
+                {settings::ActionList::moveBackward, &Object::moveBackwardMethod},
+                {settings::ActionList::rotateLeft, &Object::rotateLeftMethod},
+                {settings::ActionList::rotateRight, &Object::rotateRightMethod},
         };
         std::map<unsigned int, void (Object::*)()> onKeyPressedActionMethods {};
 

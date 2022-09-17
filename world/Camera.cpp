@@ -10,10 +10,10 @@ namespace world {
         display = false;
         controls = settings::cameraInputSettings;
         onKeyDownActionMethods = {
-                {ActionList::moveForward, &Camera::moveForwardMethod},
-                {ActionList::moveBackward, &Camera::moveBackwardMethod},
-                {ActionList::strafeLeft, &Camera::strafeLeftMethod},
-                {ActionList::strafeRight, &Camera::strafeRightMethod},
+                {settings::ActionList::moveForward, &Camera::moveForwardMethod},
+                {settings::ActionList::moveBackward, &Camera::moveBackwardMethod},
+                {settings::ActionList::strafeLeft, &Camera::strafeLeftMethod},
+                {settings::ActionList::strafeRight, &Camera::strafeRightMethod},
         };
         updateDirection();
     }

@@ -39,7 +39,7 @@ namespace world {
         double lastX = 0, lastY = 0, lastXCandidate = 0, lastYCandidate = 0;
         bool firstMouse = true;
 
-        std::map<int, ActionList> sceneControls;
+        std::map<int, settings::ActionList> sceneControls;
         std::map<unsigned int, void (Scene::*)()> onKeyDownActionMethods {
         };
 

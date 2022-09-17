@@ -79,10 +79,10 @@ namespace world {
         unsigned int objectId = action / OBJECT_CONTROLS_OFFSET;
         action -= (objectId * OBJECT_CONTROLS_OFFSET);
         if (objectId == currentObject->objectId) {
-            return currentObject->keyDownAction((Object::ActionList) action);
+            return currentObject->keyDownAction((settings::ActionList) action);
         }
         if (objectId == camera->objectId) {
-            return camera->keyDownAction((Camera::ActionList) action);
+            return camera->keyDownAction((settings::ActionList) action);
         }
     }
 
@@ -92,10 +92,10 @@ namespace world {
         }
         unsigned int objectId = action / OBJECT_CONTROLS_OFFSET;
         if (objectId == currentObject->objectId) {
-            return currentObject->keyPressedAction((Object::ActionList) action);
+            return currentObject->keyPressedAction((settings::ActionList) action);
         }
         if (objectId == camera->objectId) {
-            return camera->keyPressedAction((Camera::ActionList) action);
+            return camera->keyPressedAction((settings::ActionList) action);
         }
     }
 

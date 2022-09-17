@@ -1,6 +1,5 @@
 #include "Object.h"
 #include "../engine/DataBus.h"
-#include "../settings/controls.h"
 
 namespace world {
     Object::Object(unsigned int newObjectId, ObjectState initialState) :
@@ -44,13 +43,13 @@ namespace world {
         behaviour->execute();
     }
 
-    void Object::keyPressedAction(ActionList action) {
+    void Object::keyPressedAction(settings::ActionList action) {
         if (onKeyPressedActionMethods.contains(action)) {
             return ((*this).*(onKeyPressedActionMethods[action]))();
         }
     }
 
-    void Object::keyDownAction(ActionList action) {
+    void Object::keyDownAction(settings::ActionList action) {
         if (onKeyDownActionMethods.contains(action)) {
             ((*this).*(onKeyDownActionMethods[action]))();
         }
