@@ -23,9 +23,9 @@ namespace world {
         std::unique_ptr<Object> object = nullptr;
     };
 
-    class Scene {
+    class SceneV2 {
     public:
-        Scene();
+        SceneV2();
         std::vector<std::unique_ptr<FunctionalObject>> functionalObjects{};
         std::vector<Object*> objects{};
         Camera *camera;
@@ -51,8 +51,8 @@ namespace world {
         std::map<unsigned int, std::function<void()>> onKeyDownActionMethods {
         };
 
-        std::map<unsigned int, void (Scene::*)()> onKeyPressedActionMethods {
-                {ActionList::switchObject, &Scene::switchObjectMethod}
+        std::map<unsigned int, void (SceneV2::*)()> onKeyPressedActionMethods {
+                {ActionList::switchObject, &SceneV2::switchObjectMethod}
         };
         unsigned int lastObjectId = 1;
     };

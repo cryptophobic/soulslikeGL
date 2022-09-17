@@ -7,7 +7,7 @@
 namespace world {
 
     SceneV2::SceneV2() {
-        sceneControls = settings::sceneInputSettings;
+        sceneControls[GLFW_KEY_TAB] = ActionList::switchObject;
         camera = new Camera(++lastObjectId, settings::testWorld.cameraInitialState);
         objects.emplace_back(camera);
         updateControlsMap();
